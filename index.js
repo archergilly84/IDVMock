@@ -1,6 +1,13 @@
 const express = require("express");
 const fs = require('fs');
+
 const app = express();
+
+const PORT = 3000;
+
+app.listen(PORT, () => {
+    console.log(`Example app listening on port ${PORT}`)
+})
 
 app.use(express.json());
 
@@ -48,13 +55,13 @@ const matched = (phone , dob) => {
 
 
 app.get("/ESA",(req, res) => {
-    res.end({
+    res.status(200).send({
         redirect: "/Auth"
     })
 });
 
 app.get("/Auth", (req, res) => {
-    res.end({
+    res.status(200).send({
         redirect: "/AMtree"
     })
 });
@@ -79,13 +86,22 @@ app.post("/AMTree", (req, res) => {
     }
 
     if(Object.keys(req.body).length === 0){
-        res.end(response);
+        res.status(200).send(response);
     } else {
 
+        try {
+            const userFile = fs.readFileSync("database.json");
+            const user = JSON.parse(userFile);
+        } catch (error){
+            console.error(error.message);
+        }
+
+        
         let prompt = req.body.callbacks[0].output[0].value;
         
         if(matching.includes(prompt)){
             switch(prompt){
+                  //How to write to a JSON File
                 case "Enter CLI telephone number":
                     fs.writeFileSync("./database.json", {
                         CLI: req.body.callbacks[0].input[0].value
@@ -110,8 +126,9 @@ app.post("/AMTree", (req, res) => {
                     break;
 
                 case "Date of Birth":
+                      
                     fs.writeFileSync("./database.json", {
-                        CLI: req.body.callbacks[0].input[0].value
+                        DOB: req.body.callbacks[0].input[0].value
                     })
                     
                     response = {
@@ -134,7 +151,7 @@ app.post("/AMTree", (req, res) => {
             }
         }
 
-        res.end(response);
+        res.status(200).send(response);
     }
 
     
