@@ -3,12 +3,14 @@ const fs = require('fs');
 
 const app = express();
 
-const PORT = 3000;
+//Required to listen to specific port for Heroku
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+}
+app.listen(port);
 
-app.listen(PORT, () => {
-    console.log(`Example app listening on port ${PORT}`)
-})
-
+//To make the application deal with JSON
 app.use(express.json());
 
 const matching = ["Enter CLI telephone number", "Date of Birth", "telephone number", "postcode", "nino"];
@@ -89,23 +91,21 @@ app.post("/AMTree", (req, res) => {
         res.status(200).send(response);
     } else {
 
-        try {
-            const userFile = fs.readFileSync("database.json");
-            const user = JSON.parse(userFile);
-        } catch (error){
-            console.error(error.message);
-        }
-
+        const userFile = fs.readFileSync("database.json");
+        let user = JSON.parse(userFile);
         
         let prompt = req.body.callbacks[0].output[0].value;
         
         if(matching.includes(prompt)){
             switch(prompt){
-                  //How to write to a JSON File
+                 
                 case "Enter CLI telephone number":
-                    fs.writeFileSync("./database.json", {
-                        CLI: req.body.callbacks[0].input[0].value
-                    })
+
+                    let cli = {
+                        cli: req.body.callbacks[0].input[0].value
+                    } 
+
+                    fs.writeFileSync("./database.json", JSON.stringify(cli, null, 2))
 
                     response = {
                         "callbacks": [{
