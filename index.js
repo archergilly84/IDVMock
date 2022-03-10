@@ -223,7 +223,7 @@ app.post("/AMTree", async (req, res) => {
                     }
 
                     //Add the DOB matching table.
-                    inputValue = inputValue.split('/').join("");
+                    inputValue = inputValue.split('-').join("");
                     console.log('DOB Input: ' + inputValue);
                     await insertMatchingData("dob", inputValue);
 
