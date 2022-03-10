@@ -162,7 +162,7 @@ app.post("/AMTree", async (req, res) => {
         let prompt = req.body.callbacks[0].output[0].value;
         let inputValue = req.body.callbacks[0].input[0].value;
         let matchedSize;
-        let matched;
+        let matchedUsers;
         let challengeQuestion;
         let pipQuestion;
         const outcome = {};
@@ -238,7 +238,7 @@ app.post("/AMTree", async (req, res) => {
 
                     await insertMatchingData("postcode", inputValue);
 
-                    matched = matched();
+                    matchedUsers = matched();
                     matchedSize = matched.length;
                     challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
