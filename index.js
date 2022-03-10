@@ -76,9 +76,12 @@ async function selectAllFromMatchingQuery(){
 
 const matched = async () => {
 
+    console.log(`Matching user has been called...`)
     const matchedUserArray = [];
     const { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
+
+    console.log(`Users returned are : ${Array.toString(dbUserArray)}`);
 
     let amendedCli;
 
@@ -89,12 +92,14 @@ const matched = async () => {
     }
     
     if(!postcode){
+        console.log(`Postcode avialable...`);
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactDetails === amendedCli){
                matchedUserArray.push(user);
            }
        }
     } else {
+        console.log(`No postcode asked for ...`);
         for(user in dbUserArray){
             console.log(`Inside CLI and DOB Matched...`)
             if(user.dob === dob && user.contactDetails === amendedCli){
@@ -104,7 +109,7 @@ const matched = async () => {
             }
         }
     }
-    
+    console.log(`Matched Users are : ${Array.toString(matchedUserArray)}`);
     return matchedUserArray;
 }
 
@@ -212,7 +217,8 @@ app.post("/amtree", async (req, res) => {
 
 
                     if(matchedSize === 1){
-                        response.callbacks[0].output[0].value = challengeQuestion;
+                        //response.callbacks[0].output[0].value = challengeQuestion;
+                        response.callbacks[0].output[0].value = cis_benefit;
                     } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
                     } else {
