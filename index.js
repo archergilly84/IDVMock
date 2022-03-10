@@ -94,7 +94,7 @@ const matched = async () => {
     if(postcode){
         console.log(`Postcode avialable...`);
        for(user in dbUserArray){
-           if(user.postcode === postcode && user.dob === dob && user.contactDetails === amendedCli){
+           if(user.postcode === postcode && user.dob === dob && user.contactdetails === amendedCli){
                matchedUserArray.push(user);
            }
        }
@@ -104,10 +104,10 @@ const matched = async () => {
             console.log(`Inside CLI and DOB Matched...`)
             console.log(`USER: ${JSON.stringify(dbUserArray[index])}`);
 
-            console.log(`User is matched against users DB DOB: ${dbUserArray[index].dob} and CLI: ${dbUserArray[index].contactDetails}`);
+            console.log(`User is matched against users DB DOB: ${dbUserArray[index].dob} and CLI: ${dbUserArray[index].contactdetails}`);
             console.log(`User is matched against users Input DOB: ${dob} and CLI: ${amendedCli}`);
 
-            if(dbUserArray[index].dob === dob && dbUserArray[index].contactDetails === amendedCli){
+            if(dbUserArray[index].dob === dob && dbUserArray[index].contactdetails === amendedCli){
                 matchedUserArray.push(dbUserArray[index]);
             }
         }
