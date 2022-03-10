@@ -215,7 +215,7 @@ app.post("/amtree", async (req, res) => {
                     inputValue = inputValue.split('-').join("");
                     await insertMatchingData("dob", inputValue);
 
-                    matchedUsers = matched();
+                    matchedUsers = await matched();
                     matchedSize = matchedUsers.length;
 
 
@@ -233,7 +233,7 @@ app.post("/amtree", async (req, res) => {
 
                     await insertMatchingData("postcode", inputValue);
 
-                    matchedUsers = matched();
+                    matchedUsers = await matched();
                     matchedSize = matchedUsers.length;
                     challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
