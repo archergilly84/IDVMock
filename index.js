@@ -220,8 +220,18 @@ app.post("/amtree", async (req, res) => {
 
 
                     if(matchedSize === 1){
+                        //outcome.fieldId = challengeQuestion;
+                        outcome.fieldId = cis_benefit;
+                        //outcome.verifiedValue = matched[0].challengeQuestion;
+                        outcome.verifiedValue = matched[0].cis_benefit;
+                        outcome.inputMode = "";
+                        outcome.failureReason = "";
+                        outcome.attenmptCount = "";
+                        outcome.confirmed = "";
+                        outcome.outcome = "";
+                        outcome.secondsource = "";
                         //response.callbacks[0].output[0].value = challengeQuestion;
-                        response.callbacks[0].output[0].value = "cis_benefit";
+                        response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
                     } else {
