@@ -1,9 +1,6 @@
 const express = require("express");
 const { Pool } = require("pg");
 
-
-
-
 //Postgres setup
 const pool = new Pool(
     {
@@ -131,13 +128,13 @@ const matched = async () => {
 
 app.get("/ESA",(req, res) => {
     res.status(200).send({
-        redirect: "/Auth"
+        redirect: "https://idvmock.herokuapp.com/Auth"
     })
 });
 
 app.get("/Auth", (req, res) => {
     res.status(200).send({
-        redirect: "/AMtree"
+        redirect: "https://idvmock.herokuapp.com/AMtree"
     })
 });
 
