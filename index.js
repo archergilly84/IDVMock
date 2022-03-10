@@ -104,6 +104,8 @@ const matched = async () => {
     const matchedUserArray = [];
     const { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
+
+    cli = '0' + cli;
     
     if(!postcode){
        for(user in dbUserArray){
@@ -221,6 +223,7 @@ app.post("/AMTree", async (req, res) => {
                     }
 
                     //Add the DOB matching table.
+                    inputValue = inputValue.split('/').join("");
                     await insertMatchingData("dob", inputValue);
 
 
