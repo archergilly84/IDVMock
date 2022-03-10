@@ -112,7 +112,7 @@ const matched = async () => {
             }
         }
     }
-    console.log(`Matched Users are : ${matchedUserArray}`);
+    console.log(`Matched Users are : ${matchedUserArray.toString()}`);
     return matchedUserArray;
 }
 
