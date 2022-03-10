@@ -82,7 +82,6 @@ const matched = async () => {
 
     let amendedCli;
 
-    let convertedDob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
     if(cli.substring(0,1) === '0'){
         amendedCli = '0' + cli;
     } else {
@@ -92,13 +91,13 @@ const matched = async () => {
     console.log('DOB: ' + convertedDob);
     if(!postcode){
        for(user in dbUserArray){
-           if(user.postcode === postcode && user.dob === convertedDob && user.contactDetails === amendedCli){
+           if(user.postcode === postcode && user.dob === dob && user.contactDetails === amendedCli){
                matchedUserArray.push(user);
            }
        }
     } else {
         for(user in dbUserArray){
-            if(user.dob === convertedDob && user.contactDetails === amendedCli){
+            if(user.dob === dob && user.contactDetails === amendedCli){
                 matchedUserArray.push(user);
             }
         }
