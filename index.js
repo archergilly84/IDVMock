@@ -161,6 +161,7 @@ app.post("/AMTree", async (req, res) => {
 
         let prompt = req.body.callbacks[0].output[0].value;
         let inputValue = req.body.callbacks[0].input[0].value;
+        console.log(inputValue);
         let matchedSize;
         let matchedUsers;
         let challengeQuestion;
@@ -177,6 +178,7 @@ app.post("/AMTree", async (req, res) => {
                 case "Enter CLI telephone number":
 
                     //Add cli to the matching table.
+                    
                     await insertMatchingData("cli", inputValue);
 
                     response = {
@@ -227,10 +229,10 @@ app.post("/AMTree", async (req, res) => {
 
                     if(matchedSize === 1){
                         response.callbacks[0].output[0].value = challengeQuestion;
-                    } else if(matchedSize < 1) {
-                        //TODO Error Response from ID&V App.
-                    } else {
+                    } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
+                    } else {
+                        console.error(new Error('Broke'));
                     }
                     break;
 
@@ -272,7 +274,7 @@ app.post("/AMTree", async (req, res) => {
                         outcome.secondsource = "";
                         response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     } else {
-                        console.error(err);
+                        console.error(new Error('Broke'));
                     } 
                     break;
 
