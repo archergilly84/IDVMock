@@ -102,7 +102,7 @@ async function selectAllFromMatchingQuery(){
 const matched = async () => {
 
     const matchedUserArray = [];
-    const { cli, dob, postcode } = await selectAllFromMatchingQuery();
+    let { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
 
     cli = '0' + cli;
