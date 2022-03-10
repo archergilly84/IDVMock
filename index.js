@@ -108,6 +108,8 @@ const matched = async () => {
     dob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
     cli = '0' + cli;
     
+    console.log('CLI: ' + cli);
+    console.log('DOB: ' + dob);
     if(!postcode){
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactDetails === cli){
