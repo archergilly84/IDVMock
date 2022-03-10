@@ -102,9 +102,11 @@ const matched = async () => {
         console.log(`No postcode asked for ...`);
         for(user in dbUserArray){
             console.log(`Inside CLI and DOB Matched...`)
+            
+            console.log(`User is matched against users DB DOB: ${user.dob} and CLI: ${user.contactDetails}`);
+            console.log(`User is matched against users Input DOB: ${dob} and CLI: ${amendedCli}`);
+
             if(user.dob === dob && user.contactDetails === amendedCli){
-                console.log(`User is matched against users DB DOB: ${user.dob} and CLI: ${user.contactDetails}`);
-                console.log(`User is matched against users Input DOB: ${dob} and CLI: ${amendedCli}`);
                 matchedUserArray.push(user);
             }
         }
