@@ -88,7 +88,6 @@ const matched = async () => {
         amendedCli = cli;
     }
     
-    console.log('DOB: ' + convertedDob);
     if(!postcode){
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactDetails === amendedCli){
