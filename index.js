@@ -12,8 +12,8 @@ const pool = new Pool(
 )
 
 const app = express();
-const users = {};
-const data = {};
+let users = {};
+let data = {};
 
 //Required to listen to specific port for Heroku
 let port = process.env.PORT;
@@ -215,13 +215,13 @@ app.post("/amtree", async (req, res) => {
                     inputValue = inputValue.split('-').join("");
                     await insertMatchingData("dob", inputValue);
 
-
-                    matchedSize = matched().length;
+                    matchedUsers = matched();
+                    matchedSize = matchedUsers.length;
 
 
                     if(matchedSize === 1){
                         //response.callbacks[0].output[0].value = challengeQuestion;
-                        response.callbacks[0].output[0].value = cis_benefit;
+                        response.callbacks[0].output[0].value = "cis_benefit";
                     } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
                     } else {
@@ -234,7 +234,7 @@ app.post("/amtree", async (req, res) => {
                     await insertMatchingData("postcode", inputValue);
 
                     matchedUsers = matched();
-                    matchedSize = matched.length;
+                    matchedSize = matchedUsers.length;
                     challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
                     response = {
