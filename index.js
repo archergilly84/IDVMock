@@ -90,7 +90,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function insertMatchingData(column, data){
-    return await pool.query(`INSERT INTO matching (${column}) VALUES (${data});`)
+    return await pool.query(`INSERT INTO matching (${column}) VALUES (${data}) WHERE id = 1;`)
     .then( 
      resolve => {
          result = resolve.rows
@@ -222,7 +222,7 @@ app.post("/AMTree", async (req, res) => {
                     await insertMatchingData("dob", inputValue);
 
 
-                    matchedSize = matching().length;
+                    matchedSize = matched().length;
 
 
                     if(matchedSize === 1){
@@ -238,7 +238,7 @@ app.post("/AMTree", async (req, res) => {
 
                     await insertMatchingData("postcode", inputValue);
 
-                    matched = matching();
+                    matched = matched();
                     matchedSize = matched.length;
                     challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
@@ -277,7 +277,7 @@ app.post("/AMTree", async (req, res) => {
                     break;
 
                 case "cis_benefit":
-                    
+
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
                         await insertMatchingData("verifycount", verifiedCount++);
 
