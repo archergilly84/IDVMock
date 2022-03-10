@@ -1,6 +1,6 @@
 const express = require("express");
-const fs = require('fs');
 const { Pool } = require("pg");
+
 
 
 
@@ -15,6 +15,8 @@ const pool = new Pool(
 )
 
 const app = express();
+const users = {};
+const data = {};
 
 //Required to listen to specific port for Heroku
 let port = process.env.PORT;
@@ -33,6 +35,7 @@ const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone nu
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
 const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
 const pip_challenges = ["PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
+const verifiedCount = 0;
 
 // const users = [{
 //     guid: "",
@@ -56,23 +59,61 @@ const pip_challenges = ["PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_
 //     pip_lastpayment_date: "22-Dec-2022"   
 // }]
 
-const matched = (phone, dob, postcode) => {
+async function selectAllFromUsersQuery(){
+    return await pool.query(`SELECT * FROM Users;`)
+    .then( 
+     resolve => {
+         result = resolve.rows
+         
+         if(result.length === 1){
+             users[result[0].id] = result[0];
+         } else {
+             for(let i = 0; i < result.length; i++){
+                 users[result[i].id] = result[i];
+             }
+         }
+         console.log(JSON.stringify(users));
+         return users;
+     })
+     .catch(err => console.error(err));
+ }
+
+async function selectAllFromMatchingQuery(){
+    return await pool.query(`SELECT * FROM Matching;`)
+    .then( 
+     resolve => {
+         result = resolve.rows
+        
+         return result[0];
+     })
+     .catch(err => console.error(err));
+ }
+
+ async function insertMatchingData(column, data){
+    return await pool.query(`INSERT INTO matching (${column}) VALUES (${data});`)
+    .then( 
+     resolve => {
+         result = resolve.rows
+         return result[0];
+     })
+     .catch(err => console.error(err));
+ }
+
+const matched = async () => {
+
     const matchedUserArray = [];
+    const { cli, dob, postcode } = await selectAllFromMatchingQuery();
+    const dbUserArray = await selectAllFromUsersQuery(); 
     
-    const dbUserArray = []; //all users from DB
-
-    //Access matching table and extract data
-
-
-    if(postcode != undefined){
+    if(!postcode){
        for(user in dbUserArray){
-           if(user.postcode === postcode && user.dob === dob && user.phone === phone){
+           if(user.postcode === postcode && user.dob === dob && user.contactDetails === cli){
                matchedUserArray.push(user);
            }
        }
     } else {
         for(user in dbUserArray){
-            if(user.dob === dob && user.phone === phone){
+            if(user.dob === dob && user.contactDetails === cli){
                 matchedUserArray.push(user);
             }
         }
@@ -95,7 +136,7 @@ app.get("/Auth", (req, res) => {
     })
 });
 
-app.post("/AMTree", (req, res) => {
+app.post("/AMTree", async (req, res) => {
 
     let response = {
         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -118,24 +159,20 @@ app.post("/AMTree", (req, res) => {
         res.status(200).send(response);
     } else {
 
-        //Run query to get all callers that match. 
-
         let prompt = req.body.callbacks[0].output[0].value;
+        let inputValue = req.body.callbacks[0].input[0].value;
         
         if(typeof prompt !== 'string'){
             prompt = prompt.fieldId;
         } 
         
         if(challenges.includes(prompt)){
-            switch(prompt){
-                 
+            switch(prompt){  
+
                 case "Enter CLI telephone number":
 
-                    let cli = {
-                        cli: req.body.callbacks[0].input[0].value
-                    } 
-
                     //Add cli to the matching table.
+                    await insertMatchingData("cli", inputValue);
 
                     response = {
                         "callbacks": [{
@@ -175,16 +212,13 @@ app.post("/AMTree", (req, res) => {
                         "authId":
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
-                      
-                    let dob = {
-                        dob: req.body.callbacks[0].input[0].value
-                    }
 
                     //Add the DOB matching table.
-                    //Extract CLI
-                    let matchedSize = matching(cli,dob).length;
+                    await insertMatchingData("dob", inputValue);
 
-                    //Find available challenges from matched user within users table. 
+
+                    let matchedSize = matching().length;
+
 
                     if(matchedSize === 1){
                         response.callbacks[0].output[0].value = challengeQuestion;
@@ -197,7 +231,10 @@ app.post("/AMTree", (req, res) => {
 
                 case "postcode":
 
-                    let matchedSize = matching(cli,dob,postcode).length;
+                    await insertMatchingData("postcode", inputValue);
+
+                    let matched = matching();
+                    let matchedSize = matched.length;
                     let challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
                     response = {
@@ -216,18 +253,41 @@ app.post("/AMTree", (req, res) => {
                         "authId":
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
-
-                    if(matchedSize === 1){
-                        response.callbacks[0].output[0].value = challengeQuestion;
-                    } else if(matchedSize < 1) {
-                        //TODO Error Response from ID&V App.
-                    } else {
-                        //TODO Error 
-                    }
                     
+                    const outcome = {};
+                   
+                    if(matchedSize === 1){
+                        outcome.fieldId = challengeQuestion;
+                        outcome.verifiedValue = matched[0].cis_benefit;
+                        outcome.inputMode = "";
+                        outcome.failureReason = "";
+                        outcome.attenmptCount = "";
+                        outcome.confirmed = "";
+                        outcome.outcome = "";
+                        outcome.secondsource = "";
+                        response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                    } else {
+                        console.error(err);
+                    } 
                     break;
 
                 case "cis_benefit":
+                    
+                    const outcome = {};
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    let pipQuestion = pip_challenges[Math.random() * pip_challenges.length];
+
+                    outcome.fieldId = pipQuestion;
+                    outcome.verifiedValue = matched[0].pipQuestion;
+                    outcome.inputMode = "";
+                    outcome.failureReason = "";
+                    outcome.attenmptCount = "";
+                    outcome.confirmed = "";
+                    outcome.outcome = "";
+                    outcome.secondsource = "PIP";
 
                     response = {
                         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -246,6 +306,7 @@ app.post("/AMTree", (req, res) => {
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
 
+                    response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     break;
             }
 
@@ -259,7 +320,7 @@ app.post("/AMTree", (req, res) => {
 
     
     //1) -> get input value from client
-    let value = req.body.callbacks[0].output[0].value;
+    //let value = req.body.callbacks[0].output[0].value;
 
     
     //2) -> check user matches using telephone number and DOB
