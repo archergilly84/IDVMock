@@ -81,7 +81,7 @@ const matched = async () => {
     const { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
 
-    console.log(`Users returned are : ${Array.toString(dbUserArray)}`);
+    console.log(`Users returned are : ${dbUserArray}`);
 
     let amendedCli;
 
@@ -112,7 +112,7 @@ const matched = async () => {
             }
         }
     }
-    console.log(`Matched Users are : ${Array.toString(matchedUserArray)}`);
+    console.log(`Matched Users are : ${matchedUserArray}`);
     return matchedUserArray;
 }
 
