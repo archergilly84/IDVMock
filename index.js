@@ -161,6 +161,7 @@ app.post("/AMTree", async (req, res) => {
 
         let prompt = req.body.callbacks[0].output[0].value;
         let inputValue = req.body.callbacks[0].input[0].value;
+        let matchedSize;
         
         if(typeof prompt !== 'string'){
             prompt = prompt.fieldId;
@@ -217,7 +218,7 @@ app.post("/AMTree", async (req, res) => {
                     await insertMatchingData("dob", inputValue);
 
 
-                    let matchedSize = matching().length;
+                    matchedSize = matching().length;
 
 
                     if(matchedSize === 1){
@@ -234,7 +235,7 @@ app.post("/AMTree", async (req, res) => {
                     await insertMatchingData("postcode", inputValue);
 
                     let matched = matching();
-                    let matchedSize = matched.length;
+                    matchedSize = matched.length;
                     let challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
                     response = {
