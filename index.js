@@ -91,7 +91,7 @@ const matched = async () => {
         amendedCli = cli;
     }
     
-    if(!postcode){
+    if(postcode){
         console.log(`Postcode avialable...`);
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactDetails === amendedCli){
