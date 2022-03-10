@@ -34,28 +34,6 @@ const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_
 const pip_challenges = ["PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
 const verifiedCount = 0;
 
-// const users = [{
-//     guid: "",
-//     dob: "22-Jun-1986",
-//     phone: "07123456789",
-//     cis_benefit: "67",
-//     cis_childs_name: "Marge Smith",
-//     esa_bank_details: "0000",
-//     esa_pay_day: "Wed",
-//     pip_component: "10001, 10010",
-//     pip_last_pay_date: "22-Dec-2022"   
-// },{
-//     guid: "",
-//     dob: "02-Feb-1978",
-//     phone: "07123456711",
-//     cis_home_phone: "01112435675",
-//     cis_benefit: "675",
-//     esa_lastpayment_amount: "12345",
-//     esa_pay_day: "Fri",
-//     pip_lastpayment_amount: "10001",
-//     pip_lastpayment_date: "22-Dec-2022"   
-// }]
-
 async function selectAllFromUsersQuery(){
     return await pool.query(`SELECT * FROM Users;`)
     .then( 
@@ -99,23 +77,28 @@ async function selectAllFromMatchingQuery(){
 const matched = async () => {
 
     const matchedUserArray = [];
-    let { cli, dob, postcode } = await selectAllFromMatchingQuery();
+    const { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
 
+    let amendedCli;
+
     let convertedDob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
-    cli = '0' + cli;
+    if(cli.substring(0,1) === '0'){
+        amendedCli = '0' + cli;
+    } else {
+        amendedCli = cli;
+    }
     
-    console.log('CLI: ' + cli);
     console.log('DOB: ' + convertedDob);
     if(!postcode){
        for(user in dbUserArray){
-           if(user.postcode === postcode && user.dob === dob && user.contactDetails === cli){
+           if(user.postcode === postcode && user.dob === convertedDob && user.contactDetails === amendedCli){
                matchedUserArray.push(user);
            }
        }
     } else {
         for(user in dbUserArray){
-            if(user.dob === dob && user.contactDetails === cli){
+            if(user.dob === convertedDob && user.contactDetails === amendedCli){
                 matchedUserArray.push(user);
             }
         }
