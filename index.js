@@ -162,6 +162,9 @@ app.post("/AMTree", async (req, res) => {
         let prompt = req.body.callbacks[0].output[0].value;
         let inputValue = req.body.callbacks[0].input[0].value;
         let matchedSize;
+        let matched;
+        let challengeQuestion;
+        let pipQuestion;
         
         if(typeof prompt !== 'string'){
             prompt = prompt.fieldId;
@@ -234,9 +237,9 @@ app.post("/AMTree", async (req, res) => {
 
                     await insertMatchingData("postcode", inputValue);
 
-                    let matched = matching();
+                    matched = matching();
                     matchedSize = matched.length;
-                    let challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
+                    challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                    
                     response = {
                         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -279,7 +282,7 @@ app.post("/AMTree", async (req, res) => {
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
                         await insertMatchingData("verifycount", verifiedCount++);
 
-                    let pipQuestion = pip_challenges[Math.random() * pip_challenges.length];
+                    pipQuestion = pip_challenges[Math.random() * pip_challenges.length];
 
                     outcome.fieldId = pipQuestion;
                     outcome.verifiedValue = matched[0].pipQuestion;
