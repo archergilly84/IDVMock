@@ -32,7 +32,7 @@ const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone nu
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
 const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
 const pip_challenges = ["PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
-const verifiedCount = 0;
+let verifiedCount = 0;
 
 async function selectAllFromUsersQuery(){
     return await pool.query(`SELECT * FROM Users;`)
@@ -159,10 +159,17 @@ app.post("/amtree", async (req, res) => {
         let pipQuestion;
         const outcome = {};
         
-        if(typeof prompt !== 'string'){
+        console.log(`Challenge value type: ${typeof prompt}`);
+
+        //TODO - Broken due to value is always a string so never gets called
+        //need to find away of differng the two types of values.
+        if(typeof promptObj !== 'string'){
             prompt = prompt.fieldId;
-        } 
+        }
+       
         
+        console.log(`Challenge question: ${prompt}`);
+
         if(challenges.includes(prompt)){
             switch(prompt){  
 
@@ -223,7 +230,7 @@ app.post("/amtree", async (req, res) => {
                         //outcome.fieldId = challengeQuestion;
                         outcome.fieldId = "cis_benefit";
                         //outcome.verifiedValue = matched[0].challengeQuestion;
-                        outcome.verifiedValue = matched[0].cis_benefit;
+                        outcome.verifiedValue = matchedUsers[0].cis_benefit;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
@@ -270,7 +277,7 @@ app.post("/amtree", async (req, res) => {
                         //outcome.fieldId = challengeQuestion;
                         outcome.fieldId = "cis_benefit";
                         //outcome.verifiedValue = matched[0].challengeQuestion;
-                        outcome.verifiedValue = matched[0].cis_benefit;
+                        outcome.verifiedValue = matchedUsers[0].cis_benefit;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
@@ -291,7 +298,7 @@ app.post("/amtree", async (req, res) => {
                     pipQuestion = pip_challenges[Math.random() * pip_challenges.length];
 
                     outcome.fieldId = pipQuestion;
-                    outcome.verifiedValue = matched[0].pipQuestion;
+                    outcome.verifiedValue = matchedUsers[0].pipQuestion;
                     outcome.inputMode = "";
                     outcome.failureReason = "";
                     outcome.attenmptCount = "";
