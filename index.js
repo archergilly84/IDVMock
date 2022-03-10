@@ -102,7 +102,7 @@ const matched = async () => {
     let { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
 
-    dob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
+    //dob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
     cli = '0' + cli;
     
     console.log('CLI: ' + cli);
@@ -126,19 +126,19 @@ const matched = async () => {
 
 
 
-app.get("/ESA",(req, res) => {
+app.get("/esa",(req, res) => {
     res.status(200).send({
-        redirect: "https://idvmock.herokuapp.com/Auth"
+        redirect: "https://idvmock.herokuapp.com/auth"
     })
 });
 
-app.get("/Auth", (req, res) => {
+app.get("/auth", (req, res) => {
     res.status(200).send({
-        redirect: "https://idvmock.herokuapp.com/AMTree"
+        redirect: "https://idvmock.herokuapp.com/amtree"
     })
 });
 
-app.post("/AMTree", async (req, res) => {
+app.post("/amtree", async (req, res) => {
 
     let response = {
         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -318,11 +318,8 @@ app.post("/AMTree", async (req, res) => {
 
                     response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     break;
-            }
-
-            
+            }    
         }
-
         res.status(200).send(response);
     }
 
