@@ -165,6 +165,7 @@ app.post("/AMTree", async (req, res) => {
         let matched;
         let challengeQuestion;
         let pipQuestion;
+        const outcome = {};
         
         if(typeof prompt !== 'string'){
             prompt = prompt.fieldId;
@@ -198,7 +199,7 @@ app.post("/AMTree", async (req, res) => {
 
                 case "Date of Birth":
                 
-                    let challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
+                    challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
                     
                     response = {
                         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -258,7 +259,7 @@ app.post("/AMTree", async (req, res) => {
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
                     
-                    const outcome = {};
+                    outcome = {};
                    
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
@@ -277,8 +278,6 @@ app.post("/AMTree", async (req, res) => {
 
                 case "cis_benefit":
                     
-                    const outcome = {};
-
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
                         await insertMatchingData("verifycount", verifiedCount++);
 
