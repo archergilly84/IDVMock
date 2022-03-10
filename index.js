@@ -134,7 +134,7 @@ app.get("/ESA",(req, res) => {
 
 app.get("/Auth", (req, res) => {
     res.status(200).send({
-        redirect: "https://idvmock.herokuapp.com/AMtree"
+        redirect: "https://idvmock.herokuapp.com/AMTree"
     })
 });
 
