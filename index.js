@@ -90,7 +90,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function insertMatchingData(column, data){
-    return await pool.query(`INSERT INTO matching (${column}) VALUES ('${data}') WHERE id = 1;`)
+    return await pool.query(`UPDATE matching SET ${column} = ${data} WHERE id = 1;`)
     .then( 
      resolve => {
          result = resolve.rows
