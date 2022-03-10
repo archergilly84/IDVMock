@@ -85,7 +85,7 @@ const matched = async () => {
 
     let amendedCli;
 
-    if(cli.substring(0,1) === '0'){
+    if(cli.substring(0,1) !== '0'){
         amendedCli = '0' + cli;
     } else {
         amendedCli = cli;
@@ -102,7 +102,8 @@ const matched = async () => {
         console.log(`No postcode asked for ...`);
         for(user in dbUserArray){
             console.log(`Inside CLI and DOB Matched...`)
-            
+            console.log(`USER: ${user}`);
+
             console.log(`User is matched against users DB DOB: ${user.dob} and CLI: ${user.contactDetails}`);
             console.log(`User is matched against users Input DOB: ${dob} and CLI: ${amendedCli}`);
 
