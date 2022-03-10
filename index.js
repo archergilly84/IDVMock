@@ -268,7 +268,7 @@ app.post("/amtree", async (req, res) => {
                    
                     if(matchedSize === 1){
                         //outcome.fieldId = challengeQuestion;
-                        outcome.fieldId = cis_benefit;
+                        outcome.fieldId = "cis_benefit";
                         //outcome.verifiedValue = matched[0].challengeQuestion;
                         outcome.verifiedValue = matched[0].cis_benefit;
                         outcome.inputMode = "";
