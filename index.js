@@ -102,11 +102,11 @@ const matched = async () => {
     let { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
 
-    //dob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
+    let convertedDob = dob.substring(0,4) + "-" + dob.substring(4,6) + "-" + dob.substring(6,8);
     cli = '0' + cli;
     
     console.log('CLI: ' + cli);
-    console.log('DOB: ' + dob);
+    console.log('DOB: ' + convertedDob);
     if(!postcode){
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactDetails === cli){
@@ -123,8 +123,6 @@ const matched = async () => {
     
     return matchedUserArray;
 }
-
-
 
 app.get("/esa",(req, res) => {
     res.status(200).send({
@@ -163,7 +161,6 @@ app.post("/amtree", async (req, res) => {
 
         let prompt = req.body.callbacks[0].output[0].value;
         let inputValue = req.body.callbacks[0].input[0].value;
-        console.log(inputValue);
         let matchedSize;
         let matchedUsers;
         let challengeQuestion;
