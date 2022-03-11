@@ -26,12 +26,12 @@ app.listen(port);
 app.use(express.json());
 
 const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone number", "postcode", "nino",
-"CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO",
+"CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "cis_benefit", "CIS_Childs_DOB", "CIS_Partners_NINO",
 "ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code",
 "PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
 const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
-const pip_challenges = ["PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
+const pip_challenges = ["pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_component"];
 let verifiedCount = 0;
 
 async function selectAllFromUsersQuery(){
@@ -157,16 +157,16 @@ app.post("/amtree", async (req, res) => {
         let matchedUsers;
         let challengeQuestion;
         let pipQuestion;
-        const outcome = {};
+        let outcome = {};
         
-        console.log(`Challenge value type: ${typeof prompt}`);
-
-        //TODO - Broken due to value is always a string so never gets called
-        //need to find away of differng the two types of values.
-        if(typeof promptObj !== 'string'){
-            prompt = prompt.fieldId;
+        try{
+            let obj = JSON.parse(prompt);
+            if(obj.hasOwnProperty('fieldId')){
+                prompt = obj.fieldId;
+            }
+        } catch(err){
+            console.error(`value is not an Object`);
         }
-       
         
         console.log(`Challenge question: ${prompt}`);
 
@@ -199,7 +199,7 @@ app.post("/amtree", async (req, res) => {
 
                 case "Date of Birth":
                 
-                    challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
+                    challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
                     
                     response = {
                         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -252,7 +252,7 @@ app.post("/amtree", async (req, res) => {
 
                     matchedUsers = await matched();
                     matchedSize = matchedUsers.length;
-                    challengeQuestion = cis_challenges[Math.random() * cis_challenges.length];
+                    challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
                    
                     response = {
                         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -271,8 +271,7 @@ app.post("/amtree", async (req, res) => {
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
                     
-                    outcome = {};
-                   
+
                     if(matchedSize === 1){
                         //outcome.fieldId = challengeQuestion;
                         outcome.fieldId = "cis_benefit";
@@ -295,10 +294,14 @@ app.post("/amtree", async (req, res) => {
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
                         await insertMatchingData("verifycount", verifiedCount++);
 
-                    pipQuestion = pip_challenges[Math.random() * pip_challenges.length];
+                    pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
+                    console.log(`Question Selected was: ${pipQuestion}`);
+
+                    matchedUsers = await matched();
 
                     outcome.fieldId = pipQuestion;
-                    outcome.verifiedValue = matchedUsers[0].pipQuestion;
+                    console.log(`Verified Value Selected was: ${matchedUsers[0].pipQuestion}`);
+                    outcome.verifiedValue = matchedUsers[0][pipQuestion];
                     outcome.inputMode = "";
                     outcome.failureReason = "";
                     outcome.attenmptCount = "";
@@ -324,6 +327,120 @@ app.post("/amtree", async (req, res) => {
                     }
 
                     response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                    break;
+
+                case "pip_pay_day":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
+                    break;
+
+                case "pip_lastpayment_date":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
+                    break;
+
+                case "pip_lastpayment_amount":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
+                    break;
+                
+                case "pip_bank_details":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
+                    break;
+
+                case "pip_sort_code":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
+                    break;
+
+                case "pip_component":
+
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                        await insertMatchingData("verifycount", verifiedCount++);
+
+                    matchedUsers = await matched();
+
+                    //TODO - Check if verifyCount is bigger than 1 if so:
+                    //      -> Get SSO token from user
+                    //TODO  -> Need to add 'SSO' column to users table
+                    //TODO  -> Need to add an SSO token value to each user
+                    //TODO - formulate SSO outcome obj
+
+                    response = {
+                            "tokenId" : matchedUsers[0].sso,
+                    }
+
                     break;
             }    
         }
