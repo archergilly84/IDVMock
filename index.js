@@ -338,8 +338,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
@@ -357,8 +355,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
@@ -376,8 +372,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
@@ -395,8 +389,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
@@ -414,8 +406,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
@@ -433,8 +423,6 @@ app.post("/amtree", async (req, res) => {
 
                     //TODO - Check if verifyCount is bigger than 1 if so:
                     //      -> Get SSO token from user
-                    //TODO  -> Need to add 'SSO' column to users table
-                    //TODO  -> Need to add an SSO token value to each user
                     //TODO - formulate SSO outcome obj
 
                     response = {
