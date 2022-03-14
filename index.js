@@ -25,12 +25,11 @@ app.listen(port);
 //To make the application deal with JSON
 app.use(express.json());
 
-const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone number", "postcode", "nino",
-"CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "cis_benefit", "CIS_Childs_DOB", "CIS_Partners_NINO",
-"ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code",
-"pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code"];
-const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
-const pip_challenges = ["pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_component"];
+const challenges = ["Enter CLI telephone number", "Date of Birth", "phone number", "postcode", "nino",
+"cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name",
+"pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_account", "pip_sort_code","pip_components"];
+const cis_challenges = ["cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name"];
+const pip_challenges = ["pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_account", "pip_sort_code","pip_components"];
 
 
 async function selectAllFromUsersQuery(){
@@ -188,7 +187,6 @@ app.post("/amtree", async (req, res) => {
         let pipQuestion;
         let outcome = {};
         let verifiedCount = 0;
-        let sso;
         
         try{
             let obj = JSON.parse(prompt);
@@ -198,13 +196,12 @@ app.post("/amtree", async (req, res) => {
         } catch(err){
             console.error(`value is not an Object`);
         }
-        
-        console.log(`Challenge question: ${prompt}`);
 
         if(challenges.includes(prompt)){
             
             switch(prompt){  
 
+                //Add phone number:
                 case "Enter CLI telephone number":
 
                     //Add cli to the matching table.
@@ -259,22 +256,21 @@ app.post("/amtree", async (req, res) => {
 
 
                     if(matchedSize === 1){
-                        //outcome.fieldId = challengeQuestion;
-                        outcome.fieldId = "cis_benefit";
-                        //outcome.verifiedValue = matched[0].challengeQuestion;
-                        outcome.verifiedValue = matchedUsers[0].cis_benefit;
+                        outcome.fieldId = challengeQuestion;
+                        //outcome.fieldId = "cis_benefit";
+                        outcome.verifiedValue = matched[0].challengeQuestion;
+                        //outcome.verifiedValue = matchedUsers[0].cis_benefit;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
                         outcome.confirmed = "";
                         outcome.outcome = "";
                         outcome.secondsource = "";
-                        //response.callbacks[0].output[0].value = challengeQuestion;
                         response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
                     } else {
-                        console.error(new Error('Broke'));
+                        response.callbacks[0].output[0].value = "phone number";
                     }
                     break;
 
@@ -319,6 +315,51 @@ app.post("/amtree", async (req, res) => {
                     } else {
                         console.error(new Error('Broke'));
                     } 
+                    break;
+
+                case "phone number":
+
+                    await insertMatchingData("cli", inputValue);
+
+                    matchedUsers = await matched();
+                    matchedSize = matchedUsers.length;
+                    challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                    
+                    response = {
+                        "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
+                        "callbacks": [{
+                            "output": [{
+                                "name": "prompt",
+                                "value": ""
+                            }],
+                            "input": [{
+                                "name": "IDToken1",
+                                "value": ""
+                            }],
+                            "type": "NameCallback"
+                        }],
+                        "authId":
+                        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
+                    }
+                    
+
+                    if(matchedSize === 1){
+                        outcome.fieldId = challengeQuestion;
+                        //outcome.fieldId = "cis_benefit";
+                        outcome.verifiedValue = matched[0].challengeQuestion;
+                        //outcome.verifiedValue = matchedUsers[0].cis_benefit;
+                        outcome.inputMode = "";
+                        outcome.failureReason = "";
+                        outcome.attenmptCount = "";
+                        outcome.confirmed = "";
+                        outcome.outcome = "";
+                        outcome.secondsource = "";
+                        response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                    } else if(matchedSize > 1) {
+                        response.callbacks[0].output[0].value = "postcode";
+                    } else {
+                        console.error(new Error('Broke'));
+                    }     
                     break;
 
                 case "cis_benefit":
@@ -400,12 +441,6 @@ app.post("/amtree", async (req, res) => {
         res.status(200).send(response);
     }
 })
-
-
-//TODO - Check endpoint from real app CSRF = header maybe ->  may not require it.
-app.post("payments/esa", (req, res) => {
-    
-});
 
 app.post("/cognitio", (req, res) => {
     res.status(200).send({
