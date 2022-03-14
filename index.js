@@ -117,15 +117,17 @@ const matched = async () => {
 }
 
 app.get("/esa",(req, res) => {
-    res.status(200).send({
-        redirect: "https://idvmock.herokuapp.com/auth"
-    })
+    // res.status(200).send({
+    //     redirect: "https://idvmock.herokuapp.com/auth"
+    // })
+    res.redirect("https://idvmock.herokuapp.com/auth");
 });
 
 app.get("/auth", (req, res) => {
-    res.status(200).send({
-        redirect: "https://idvmock.herokuapp.com/amtree"
-    })
+    // res.status(200).send({
+    //     redirect: "https://idvmock.herokuapp.com/amtree"
+    // })
+    res.redirect("https://idvmock.herokuapp.com/amtree");
 });
 
 app.post("/amtree", async (req, res) => {
