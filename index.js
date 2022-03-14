@@ -30,7 +30,6 @@ const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone nu
 "ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code",
 "pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code"];
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
-const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
 const pip_challenges = ["pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_component"];
 
 
@@ -64,7 +63,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function getNINO(guid){
-    return await pool.query(`SELECT nino FROM Guid WHERE guid = ${guid};`)
+    return await pool.query(`SELECT nino FROM Guid WHERE guid = '${guid}';`)
     .then( 
      resolve => {
          result = resolve.rows    
@@ -128,11 +127,26 @@ const matched = async () => {
     return matchedUserArray;
 }
 
-app.get("/esa",(req, res) => {
-    // res.status(200).send({
-    //     redirect: "https://idvmock.herokuapp.com/auth"
-    // })
-    res.redirect("https://idvmock.herokuapp.com/auth");
+app.get("/esa",async (req, res) => {
+    let sso = req.headers.csrf;
+    if(sso !== undefined){
+        let matchedUsers = await matched();
+        let paymentAmmount = matchedUsers[0].payment_amount;
+        let paymentDate = matchedUsers[0].payment_date;
+        let response = {
+            "cookie":"session=zVfks8vlXIh_mTNBdxiWAg|1637085811|N54qP1jahVd6BcPh0Rr_W2fUoOCzgrzRzsxPBdXk5jw0Hj4TpJaW9mXhQ1M6stFViBSzWwvaQTFElxEvikqLTSrcwfnKnzH0RZavjhTJFrza_M9oVnmAdnwSZBNcmWZvGLJUEOJ5RVPCB5QRYz2wVhIPX3YGMLUxDfNlVwIfjpGuAnSuet7CTUufH5X5HloOAi6L8hPJsqdjOEw544n3iMhoWVrxqbC89EForIMd4a_WnOihZUEXlLXoM4Fu462jrUQcmIdtLaqCO11NEtnFi0LLn_r_tRy3P7FEPKomNN4lX_e6QH4sTgGQp3UwsrPCU3tBi817NA961-FKTQ2sqzQYgoXUsYpyCiIhKab8QpgSamZftY47s9sLCXF3Jh9n6HZkln_Xe0xD1o5EyuK3sodR6Ou3WMVefpnacRKCft6q1mzJZjGO9UUWpBKbsMGDLWfzeA4F9HKBtTshPFMYUyVmEmq0dS5KX8M0pESpTe5by6KuHpG33G03atWPPCcgBtndyhkkieGUd5wWVy1_hNd8XFTMMYHVgpBq0Nlj53_p8jNRjIZzQkvW4f9KJEQkVtxaMhB0JmV4LdhlJxtSkbqOO-yYSdfF0U1dP33-RHvxW1Uh0Jv5zcvrT5Tsfclua-KO8avLWTvyHw-LuscLLOlbuWjtvt3EV1UXcV7fcw8fU8RvClHEZdb0pVhg_1awE2HhTGVsK1_3urtUwAN0fglIPMx6YXNpAAzRjcXTyQXjy77qq-3qymvF71GjUJrCCinY_T3-b3AQ84eMfnXbaXGOr7ZOXfFkbUzmApT6-E3Gi7x45kjnM_B7iA4dmhWGM1hjIJP6kOKPwsOm1yQMmmold51j3JaDjbrYA3V8kxFMZ_C4F1Yb1MczLoa80YSeIqU3Q8d8PaU__Muq1-46dtRU6Any-suBnN1hJ5ejhfnsTEaoLSW8xWsxIXqRAsAsrLRyYfGuICf3OgA-98LdK19YvSVMsZBJTkQzcvgpHz_vI0C8M7USNp6rIUy2FelZ0YIAkaXeIJZj7Je7cskzPsYvwp1ZaLhIY2uUtobLZHKjNbKUFby8y03OMhUgIoTFu-CGbNK5T0yJ5bLjYqjGRd7efYW2Ru3rimryxEmbEcEQlqDXveOIlYLQdjwDBjkojNLeje6zvzhlAAJmYUo_TniOBRI1QDv5Sryye4TDNz-Z30ZEH38kcYo9B7sm_zckNoUHg2iu_wFyrZtvRrnZ7rAC1KcAew0GULisXarDNfCbVnCFnn-OH8tUlwDTldTVsb99WgyFhJeGkLe7NEIxfaRjJ--KdpmjgraCnibykBduiVBNmiIXg55lCVfGiE_YarrHI_4fsBa5DvK6riycLOQ4ZGgj44ZXhk9WXUOFLgU_01xM24OBxY9U14_jRjJnwkCa4fwpFemFQZAy7voaic83GqjZndSBzB9mZoAyo4wkg9Oi0FGpYj0rEu2qFOlewnqibDELeAz7jzVII0SxzbAVfVabQrLFlEL9ZvMvEEG75jmtpc_Ap7YWjc8bUBap_KAzDcqn5iz9GiTMrvdObzWwFwIPoUaEHra6030HviDgJVCFTORGLGFxyoyTIyWO_JUiLxkaRIX4WaYI0Iq330rUoSE1fqwOUdtQ57wPLP3vLNWQe7Wu9-SUEe7fzXcRs2FFsGgggtwiozVFDyvxEP_HwdFo5aokRrSSuhHQbnduRhCzSs5LbuBz9BuEYMf0u4XAX2Fg4nP3fkaeGVvtbPOAKLwcglMvMFrC9GoENs3beBYFKpEDqspnzEPiiECqGNbV4YoEiM0CVa0NXBlpVYYGMkg7jDrtqUdfYzWeKhyuA2RUhEbpb3RFm5nTjkDjdYcvZewIor1UiENhkMbPhpnbnKu6Vj6L7jLIaRkjwvUMm1zg9aBdHRbv1zx9H32fwcFqeI3g6OTmU1LODG1yXbmrsBDnFuaJ0uCA6_ll|pH5F37swVT_07fr9JlRSKGUa7Pk; Path=/; SameSite=Lax; Secure;HttpOnly",
+               "guid": matchedUsers[0].guid,
+               "paymentDate": paymentDate,
+               "paymentAmount": paymentAmmount
+        }
+        res.status(200).send(response);
+    } else {
+        // res.status(200).send({
+        //     redirect: "https://idvmock.herokuapp.com/auth"
+        // })
+        res.redirect("https://idvmock.herokuapp.com/auth");
+    }
+    
 });
 
 app.get("/auth", (req, res) => {
@@ -308,6 +322,11 @@ app.post("/amtree", async (req, res) => {
                     break;
 
                 case "cis_benefit":
+                case "cis_home_phone":
+                case "cis_mobile_phone":
+                case "cis_childs_dob":
+                case "cis_partners_nino":
+                case "cis_partners_dob":
 
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
                        await insertMatchingData('verifycount', 1);
@@ -389,12 +408,25 @@ app.post("payments/esa", (req, res) => {
 });
 
 app.post("/cognitio", (req, res) => {
-
+    res.status(200).send({
+        "id" : "123456FTG7890"
+    })
 });
 
-app.post("/guid/:guid", async (req, res) => {
-   let guid = req.params.guid;
-   let nino = await getNINO(guid);
+app.get("/guid/:guid", async (req, res) => {
+   let congnitioId = req.headers.cogid;
+   if(congnitioId !== undefined){
+    let guid = req.params.guid;
+    let nino = await getNINO(guid);
+    res.status(200).send({
+        "nino" : nino
+    })
+   } else {
+    res.status(500).send({
+        "message" : "Bad Request - No Cognition ID Supplied"
+    })
+   }
+   
 })
 
     
