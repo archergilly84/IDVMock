@@ -28,7 +28,7 @@ app.use(express.json());
 const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone number", "postcode", "nino",
 "CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "cis_benefit", "CIS_Childs_DOB", "CIS_Partners_NINO",
 "ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code",
-"PIP_Last_Payment_Amount", "PIP_Last_Payment_Date","PIP_Pay_Day", "PIP_Bank_Account", "PIP_Sort_Code"];
+"pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code"];
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
 const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
 const pip_challenges = ["pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_component"];
@@ -47,7 +47,6 @@ async function selectAllFromUsersQuery(){
                  users[result[i].id] = result[i];
              }
          }
-         console.log(JSON.stringify(users));
          return users;
      })
      .catch(err => console.error(err));
@@ -59,6 +58,16 @@ async function selectAllFromMatchingQuery(){
      resolve => {
          result = resolve.rows
         
+         return result[0];
+     })
+     .catch(err => console.error(err));
+ }
+
+ async function getNINO(guid){
+    return await pool.query(`SELECT nino FROM Guid WHERE guid = ${guid};`)
+    .then( 
+     resolve => {
+         result = resolve.rows    
          return result[0];
      })
      .catch(err => console.error(err));
@@ -90,12 +99,9 @@ async function selectAllFromMatchingQuery(){
 
 const matched = async () => {
 
-    console.log(`Matching user has been called...`)
     const matchedUserArray = [];
     const { cli, dob, postcode } = await selectAllFromMatchingQuery();
     const dbUserArray = await selectAllFromUsersQuery(); 
-
-    console.log(`Users returned are : ${JSON.stringify(dbUserArray)}`);
 
     let amendedCli;
 
@@ -106,27 +112,19 @@ const matched = async () => {
     }
     
     if(postcode){
-        console.log(`Postcode avialable...`);
        for(user in dbUserArray){
            if(user.postcode === postcode && user.dob === dob && user.contactdetails === amendedCli){
                matchedUserArray.push(user);
            }
        }
     } else {
-        console.log(`No postcode asked for ...`);
+        
         for(index in dbUserArray){
-            console.log(`Inside CLI and DOB Matched...`)
-            console.log(`USER: ${JSON.stringify(dbUserArray[index])}`);
-
-            console.log(`User is matched against users DB DOB: ${dbUserArray[index].dob} and CLI: ${dbUserArray[index].contactdetails}`);
-            console.log(`User is matched against users Input DOB: ${dob} and CLI: ${amendedCli}`);
-
             if(dbUserArray[index].dob === dob && dbUserArray[index].contactdetails === amendedCli){
                 matchedUserArray.push(dbUserArray[index]);
             }
         }
     }
-    console.log(`Matched Users are : ${JSON.stringify(matchedUserArray[0])}`);
     return matchedUserArray;
 }
 
@@ -138,10 +136,11 @@ app.get("/esa",(req, res) => {
 });
 
 app.get("/auth", (req, res) => {
-    // res.status(200).send({
-    //     redirect: "https://idvmock.herokuapp.com/amtree"
-    // })
-    res.redirect("https://idvmock.herokuapp.com/amtree");
+    //Extract GOTO param from query string
+    res.status(200).send({
+        redirect: "https://idvmock.herokuapp.com/amtree"
+    })
+    //res.redirect("https://idvmock.herokuapp.com/amtree");
 });
 
 app.post("/amtree", async (req, res) => {
@@ -320,7 +319,6 @@ app.post("/amtree", async (req, res) => {
                     matchedUsers = await matched();
 
                     outcome.fieldId = pipQuestion;
-                    console.log(`Verified Value Selected was: ${matchedUsers[0].pipQuestion}`);
                     outcome.verifiedValue = matchedUsers[0][pipQuestion];
                     outcome.inputMode = "";
                     outcome.failureReason = "";
@@ -356,21 +354,23 @@ app.post("/amtree", async (req, res) => {
                 case "pip_sort_code":
                 case "pip_component":
 
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
                         await insertMatchingData("verifycount", 1);
+                    }
 
                     matchedUsers = await matched();
                     verifiedCount = await getVerifyCount();
-
+                    
                     if(verifiedCount >= 1){
                         response = {
                             "tokenId" : matchedUsers[0].sso,
                         }
                     } else {
-                        //Create Error Response
+                        //TODO - Create Error Response
                         response = {
                             "error" : {
-                                "failure" : "detailurl"
+                                "failureUrl" : "",
+                                "detail" : ""
                             }
                         }
                     }
@@ -383,20 +383,18 @@ app.post("/amtree", async (req, res) => {
 })
 
 
+//TODO - Check endpoint from real app CSRF = header maybe ->  may not require it.
+app.post("payments/esa", (req, res) => {
     
+});
 
-    
-    //1) -> get input value from client
-    //let value = req.body.callbacks[0].output[0].value;
+app.post("/cognitio", (req, res) => {
 
-    
-    //2) -> check user matches using telephone number and DOB
-    //if more than one user, disambiguate using postcode.
-    //3) -> Check what second source is avilable.
-    //4) -> Ask Random CIS Based Question with second source flag.
-    //5) -> Check and record if successful
-    //6) -> Ask second Data Source
-    //7) -> Check and record if successful
-    //8) -> If >= 1 correct issue SSO
-    //9) -> if == 0 send error message
+});
+
+app.post("/guid/:guid", async (req, res) => {
+   let guid = req.params.guid;
+   let nino = await getNINO(guid);
+})
+
     
