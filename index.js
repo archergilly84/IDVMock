@@ -32,7 +32,7 @@ const challenges = ["Enter CLI telephone number", "Date of Birth", "telephone nu
 const cis_challenges = ["CIS_Home_Telephone_Number", "CIS_Mobile_Telephone_Number", "CIS_Benefits", "CIS_Childs_DOB", "CIS_Partners_NINO"];
 const esa_challenges = ["ESA_Last_Payment_Amount", "ESA_Last_Payment_Date","ESA_Pay_Day", "ESA_Bank_Account", "ESA_Sort_Code"];
 const pip_challenges = ["pip_lastpayment_amount", "pip_lastpayment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_component"];
-let verifiedCount = 0;
+
 
 async function selectAllFromUsersQuery(){
     return await pool.query(`SELECT * FROM Users;`)
@@ -65,6 +65,9 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function insertMatchingData(column, data){
+    if(column === 'verifycount') {
+        data = await setVerifyCount(data);
+    }
     return await pool.query(`UPDATE matching SET ${column} = ${data} WHERE id = 1;`)
     .then( 
      resolve => {
@@ -72,6 +75,17 @@ async function selectAllFromMatchingQuery(){
          return result[0];
      })
      .catch(err => console.error(err));
+ }
+
+ async function setVerifyCount(data) {
+    let verifiedCount =  await pool.query(`SELECT verifycount FROM matching`).then(resolve => {result = resolve.rows[0].verifycount; return result});
+    verifiedCount += data
+    return verifiedCount;
+ }
+
+ async function getVerifyCount() {
+    let verifiedCount =  await pool.query(`SELECT verifycount FROM matching`).then(resolve => {result = resolve.rows[0].verifycount; return result});
+    return verifiedCount;
  }
 
 const matched = async () => {
@@ -160,6 +174,8 @@ app.post("/amtree", async (req, res) => {
         let challengeQuestion;
         let pipQuestion;
         let outcome = {};
+        let verifiedCount = 0;
+        let sso;
         
         try{
             let obj = JSON.parse(prompt);
@@ -293,9 +309,10 @@ app.post("/amtree", async (req, res) => {
 
                 case "cis_benefit":
 
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
+                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
+                       await insertMatchingData('verifycount', 1);
+                    }
+                       
                     pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
                     console.log(`Question Selected was: ${pipQuestion}`);
 
@@ -332,106 +349,31 @@ app.post("/amtree", async (req, res) => {
                     break;
 
                 case "pip_pay_day":
-
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
-                    matchedUsers = await matched();
-
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
-                            "tokenId" : matchedUsers[0].sso,
-                    }
-
-                    break;
-
                 case "pip_lastpayment_date":
-
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
-                    matchedUsers = await matched();
-
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
-                            "tokenId" : matchedUsers[0].sso,
-                    }
-
-                    break;
-
                 case "pip_lastpayment_amount":
-
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
-                    matchedUsers = await matched();
-
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
-                            "tokenId" : matchedUsers[0].sso,
-                    }
-
-                    break;
-                
                 case "pip_bank_details":
-
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
-                    matchedUsers = await matched();
-
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
-                            "tokenId" : matchedUsers[0].sso,
-                    }
-
-                    break;
-
                 case "pip_sort_code":
-
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
-
-                    matchedUsers = await matched();
-
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
-                            "tokenId" : matchedUsers[0].sso,
-                    }
-
-                    break;
-
                 case "pip_component":
 
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome)
-                        await insertMatchingData("verifycount", verifiedCount++);
+                        await insertMatchingData("verifycount", 1);
 
                     matchedUsers = await matched();
+                    verifiedCount = await getVerifyCount();
 
-                    //TODO - Check if verifyCount is bigger than 1 if so:
-                    //      -> Get SSO token from user
-                    //TODO - formulate SSO outcome obj
-
-                    response = {
+                    if(verifiedCount >= 1){
+                        response = {
                             "tokenId" : matchedUsers[0].sso,
+                        }
+                    } else {
+                        //Create Error Response
+                        response = {
+                            "error" : {
+                                "failure" : "detailurl"
+                        }
                     }
 
-                    break;
+                    break; 
             }    
         }
         res.status(200).send(response);
