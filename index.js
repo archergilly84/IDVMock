@@ -150,13 +150,24 @@ app.get("/esa",async (req, res) => {
 
 app.get("/auth", (req, res) => {
     //Extract GOTO param from query string
+    let gotoParam = req.params.goto;
     res.status(200).send({
+        goto : gotoParam,
         redirect: "https://idvmock.herokuapp.com/amtree"
     })
     //res.redirect("https://idvmock.herokuapp.com/amtree");
 });
 
 app.post("/amtree", async (req, res) => {
+
+    let prompt = req.body.callbacks[0].output[0].value;
+    let inputValue = req.body.callbacks[0].input[0].value;
+    let matchedSize;
+    let matchedUsers;
+    let challengeQuestion;
+    let pipQuestion;
+    let outcome = {};
+    let verifiedCount = 0;
 
     let response = {
         "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -179,15 +190,6 @@ app.post("/amtree", async (req, res) => {
         res.status(200).send(response);
     } else {
 
-        let prompt = req.body.callbacks[0].output[0].value;
-        let inputValue = req.body.callbacks[0].input[0].value;
-        let matchedSize;
-        let matchedUsers;
-        let challengeQuestion;
-        let pipQuestion;
-        let outcome = {};
-        let verifiedCount = 0;
-        
         try{
             let obj = JSON.parse(prompt);
             if(obj.hasOwnProperty('fieldId')){
@@ -368,13 +370,13 @@ app.post("/amtree", async (req, res) => {
                 case "cis_childs_dob":
                 case "cis_partners_nino":
                 case "cis_partners_dob":
+                case "cis_childs_name":
 
                     if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
                        await insertMatchingData('verifycount', 1);
                     }
                        
                     pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
-                    console.log(`Question Selected was: ${pipQuestion}`);
 
                     matchedUsers = await matched();
 
