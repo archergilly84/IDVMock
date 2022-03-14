@@ -189,6 +189,7 @@ app.post("/amtree", async (req, res) => {
         console.log(`Challenge question: ${prompt}`);
 
         if(challenges.includes(prompt)){
+            
             switch(prompt){  
 
                 case "Enter CLI telephone number":
@@ -370,6 +371,7 @@ app.post("/amtree", async (req, res) => {
                         response = {
                             "error" : {
                                 "failure" : "detailurl"
+                            }
                         }
                     }
 
@@ -378,6 +380,8 @@ app.post("/amtree", async (req, res) => {
         }
         res.status(200).send(response);
     }
+})
+
 
     
 
@@ -396,5 +400,3 @@ app.post("/amtree", async (req, res) => {
     //8) -> If >= 1 correct issue SSO
     //9) -> if == 0 send error message
     
-    
-})
