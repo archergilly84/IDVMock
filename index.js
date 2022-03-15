@@ -149,7 +149,7 @@ app.get("/esa", async (req, res) => {
 app.get("/auth", (req, res) => {
     
     // //Extract GOTO param from query string
-    // let gotoParam = req.query.goto;
+    let gotoParam = req.query.goto;
 
     // console.log(gotoParam);
 
