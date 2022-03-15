@@ -116,7 +116,6 @@ const matched = async () => {
            }
        }
     } else {
-        
         for(index in dbUserArray){
             if(dbUserArray[index].dob === dob && dbUserArray[index].contactdetails === amendedCli){
                 matchedUserArray.push(dbUserArray[index]);
@@ -126,7 +125,7 @@ const matched = async () => {
     return matchedUserArray;
 }
 
-app.get("/esa",async (req, res) => {
+app.get("/esa", async (req, res) => {
     let sso = req.headers.csrf;
     if(sso !== undefined){
         let matchedUsers = await matched();
@@ -141,21 +140,24 @@ app.get("/esa",async (req, res) => {
         res.status(200).send(response);
     } else {
         // res.status(200).send({
-        //     redirect: "https://idvmock.herokuapp.com/auth"
+        //     redirect: "https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid"
         // })
-        res.redirect(`https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid`);
-    }
-    
+        res.redirect("https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
+    }   
 });
 
 app.get("/auth", (req, res) => {
-    //Extract GOTO param from query string
-    let gotoParam = req.params.goto;
-    res.status(200).send({
-        goto : gotoParam,
-        redirect: "https://idvmock.herokuapp.com/amtree"
-    })
-    //res.redirect("https://idvmock.herokuapp.com/amtree");
+    
+    // //Extract GOTO param from query string
+    // let gotoParam = req.query.goto;
+
+    // console.log(gotoParam);
+
+    // res.status(200).send({
+    //     "goto" : gotoParam,
+    //     "redirect": "https://idvmock.herokuapp.com/amtree"
+    // })
+    res.redirect("https://idvmock.herokuapp.com/amtree");
 });
 
 app.post("/amtree", async (req, res) => {
