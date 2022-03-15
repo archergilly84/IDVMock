@@ -143,7 +143,7 @@ app.get("/esa",async (req, res) => {
         // res.status(200).send({
         //     redirect: "https://idvmock.herokuapp.com/auth"
         // })
-        res.redirect("https://idvmock.herokuapp.com/auth");
+        res.redirect(`https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid`);
     }
     
 });
@@ -442,6 +442,16 @@ app.post("/amtree", async (req, res) => {
         }
         res.status(200).send(response);
     }
+})
+
+app.post("/sso", (req, res) => {
+    let ssoToken = req.headers.crsf;
+    if(ssoToken === undefined){
+        res.status(500).send({
+            "message" : "Bad Request - No SSO Token Supplied"
+        })
+    }
+    res.redirect("https://idvmock.herokuapp.com/esa");
 })
 
 app.post("/cognitio", (req, res) => {
