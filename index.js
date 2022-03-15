@@ -153,11 +153,11 @@ app.get("/auth", (req, res) => {
 
     // console.log(gotoParam);
 
-    // res.status(200).send({
-    //     "goto" : gotoParam,
-    //     "redirect": "https://idvmock.herokuapp.com/amtree"
-    // })
-    res.redirect("https://idvmock.herokuapp.com/amtree");
+    res.status(200).send({
+        "goto" : gotoParam,
+        "redirect": "https://idvmock.herokuapp.com/amtree"
+    })
+    //res.redirect("https://idvmock.herokuapp.com/amtree");
 });
 
 app.post("/amtree", async (req, res) => {
