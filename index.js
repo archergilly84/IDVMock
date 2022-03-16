@@ -139,10 +139,8 @@ app.get("/esa", async (req, res) => {
         }
         res.status(200).send(response);
     } else {
-        // res.status(200).send({
-        //     redirect: "https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid"
-        // })
-        res.redirect("https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
+        res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
+        res.redirect("https://idvmock.herokuapp.com/auth");
     }   
 });
 
@@ -160,26 +158,20 @@ app.get("/pip", async (req, res) => {
         }
         res.status(200).send(response);
     } else {
-        // res.status(200).send({
-        //     redirect: "https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-ESA-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fbenefits.live.shefcon-proddth.dwpcloud.uk%252Fpayments%252Fesa%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid"
-        // })
-        res.redirect("https://idvmock.herokuapp.com/auth?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-PIP-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252Fpip%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
+        res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
+        res.redirect("https://idvmock.herokuapp.com/auth");
     }   
 });
 
 app.get("/auth", (req, res) => {
-    
-    // //Extract GOTO param from query string
-    let gotoParam = req.query.goto;
-
-    // console.log(gotoParam);
-
-    res.status(200).send({
-        "goto" : gotoParam,
-        "redirect": "https://idvmock.herokuapp.com/amtree"
-    })
-    //res.redirect("https://idvmock.herokuapp.com/amtree");
+    res.redirect("https://idvmock.herokuapp.com/login?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-PIP-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252F%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
 });
+
+app.get("/login", (req, res) => {
+    res.status(500).send({
+        "error" : "500 Bad Request - Should not have arrived here silly"
+    })
+})
 
 app.post("/amtree", async (req, res) => {
 
@@ -226,11 +218,8 @@ app.post("/amtree", async (req, res) => {
             
             switch(prompt){  
 
-                //Add phone number:
                 case "Enter CLI telephone number":
-
-                    //Add cli to the matching table.
-                    
+                
                     await insertMatchingData("cli", inputValue);
 
                     response = {
@@ -246,8 +235,7 @@ app.post("/amtree", async (req, res) => {
                             "type": "NameCallback"
                         }],
                         "authId":
-                        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiI4b3RiYjYzZzhhMjdjNW8zYWpyMGhrZWJtbyIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.3Nep_KEA4sTolvRg2VIU7J9g6whlQYiR8zq2CjtoX1I",
-                        "url":"https://10.80.131.18/am/json/realms/root/realms/Citizens/realms/TIDV/authenticate?service=TIDV&authIndexType=service&authIndexValue=TIDV&random=3a5320c5-efab-2066-d4a2-96615e9ebf7c-1"
+                        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiI4b3RiYjYzZzhhMjdjNW8zYWpyMGhrZWJtbyIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.3Nep_KEA4sTolvRg2VIU7J9g6whlQYiR8zq2CjtoX1I"
                     }
                     break;
 
@@ -272,7 +260,6 @@ app.post("/amtree", async (req, res) => {
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
 
-                    //Add the DOB matching table.
                     inputValue = inputValue.split('-').join("");
                     await insertMatchingData("dob", inputValue);
 
@@ -282,9 +269,7 @@ app.post("/amtree", async (req, res) => {
 
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
-                        //outcome.fieldId = "cis_benefit";
-                        outcome.verifiedValue = matched[0].challengeQuestion;
-                        //outcome.verifiedValue = matchedUsers[0].cis_benefit;
+                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
@@ -326,10 +311,8 @@ app.post("/amtree", async (req, res) => {
                     
 
                     if(matchedSize === 1){
-                        //outcome.fieldId = challengeQuestion;
-                        outcome.fieldId = "cis_benefit";
-                        //outcome.verifiedValue = matched[0].challengeQuestion;
-                        outcome.verifiedValue = matchedUsers[0].cis_benefit;
+                        outcome.fieldId = challengeQuestion;
+                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
@@ -338,7 +321,13 @@ app.post("/amtree", async (req, res) => {
                         outcome.secondsource = "";
                         response.callbacks[0].output[0].value = JSON.stringify(outcome);
                     } else {
-                        console.error(new Error('Broke'));
+                        console.error(new Error('No Users returned using postcode disambiguator'));
+                        response = {
+                            "error" : {
+                                "failureUrl" : "",
+                                "detail" : "No Users returned using postcode disambiguator'"
+                            }
+                        }
                     } 
                     break;
 
@@ -370,9 +359,7 @@ app.post("/amtree", async (req, res) => {
 
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
-                        //outcome.fieldId = "cis_benefit";
-                        outcome.verifiedValue = matched[0].challengeQuestion;
-                        //outcome.verifiedValue = matchedUsers[0].cis_benefit;
+                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attenmptCount = "";
@@ -383,7 +370,13 @@ app.post("/amtree", async (req, res) => {
                     } else if(matchedSize > 1) {
                         response.callbacks[0].output[0].value = "postcode";
                     } else {
-                        console.error(new Error('Broke'));
+                        console.error(new Error('No Users returned using User Entered Phone Number'));
+                        response = {
+                            "error" : {
+                                "failureUrl" : "",
+                                "detail" : "No Users returned using User Entered Phone Number"
+                            }
+                        }
                     }     
                     break;
 
@@ -451,7 +444,6 @@ app.post("/amtree", async (req, res) => {
                             "tokenId" : matchedUsers[0].sso,
                         }
                     } else {
-                        //TODO - Create Error Response
                         response = {
                             "error" : {
                                 "failureUrl" : "",
@@ -459,8 +451,7 @@ app.post("/amtree", async (req, res) => {
                             }
                         }
                     }
-
-                    break; 
+                    break;
             }    
         }
         res.status(200).send(response);
@@ -493,10 +484,9 @@ app.get("/guid/:guid", async (req, res) => {
     })
    } else {
     res.status(500).send({
-        "message" : "Bad Request - No Cognition ID Supplied"
+        "message" : "Bad Request - No Cognitio ID Supplied"
     })
    }
-   
 })
 
     
