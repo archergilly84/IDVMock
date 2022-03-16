@@ -473,7 +473,12 @@ app.post("/sso", (req, res) => {
     let ssoToken = req.headers.crsf;
     if(ssoToken === undefined){
         res.status(500).send({
-            "message" : "Bad Request - No SSO Token Supplied"
+            "code": 500,
+            "reason": "Bad Request",
+            "message": "No SSO Token Supplied",
+            "detail":{
+                "failureUrl": "No SSO Token Supplied"
+            }
         })
     }
     res.redirect("https://idvmock.herokuapp.com/esa");
