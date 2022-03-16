@@ -169,7 +169,12 @@ app.get("/auth", (req, res) => {
 
 app.get("/login", (req, res) => {
     res.status(500).send({
-        "error" : "500 Bad Request - Should not have arrived here silly"
+        "code": 500,
+        "reason": "Bad Request",
+        "message": "Should not have arrived here silly",
+        "detail":{
+            "failureUrl": "Should not have arrived here silly"
+        }
     })
 })
 
@@ -323,9 +328,11 @@ app.post("/amtree", async (req, res) => {
                     } else {
                         console.error(new Error('No Users returned using postcode disambiguator'));
                         response = {
-                            "error" : {
-                                "failureUrl" : "",
-                                "detail" : "No Users returned using postcode disambiguator'"
+                            "code":401,
+                            "reason":"Unauthorized",
+                            "message":"Login failure",
+                            "detail":{
+                                "failureUrl":"No Users returned using postcode disambiguator"
                             }
                         }
                     } 
@@ -372,9 +379,11 @@ app.post("/amtree", async (req, res) => {
                     } else {
                         console.error(new Error('No Users returned using User Entered Phone Number'));
                         response = {
-                            "error" : {
-                                "failureUrl" : "",
-                                "detail" : "No Users returned using User Entered Phone Number"
+                            "code":401,
+                            "reason":"Unauthorized",
+                            "message":"Login failure",
+                            "detail":{
+                                "failureUrl":"No Users returned using User Entered Phone Number"
                             }
                         }
                     }     
@@ -445,10 +454,12 @@ app.post("/amtree", async (req, res) => {
                         }
                     } else {
                         response = {
-                            "error" : {
-                                "failureUrl" : "",
-                                "detail" : ""
-                            }
+                                "code": 401,
+                                "reason": "Unauthorized",
+                                "message": "User not verified",
+                                "detail":{
+                                    "failureUrl": "User has not verified"
+                                }
                         }
                     }
                     break;
@@ -483,8 +494,14 @@ app.get("/guid/:guid", async (req, res) => {
         "nino" : nino
     })
    } else {
-    res.status(500).send({
-        "message" : "Bad Request - No Cognitio ID Supplied"
+    res.status(500).send(
+        {
+            "code": 500,
+            "reason": "Bad Request",
+            "message": "No Cognitio ID Supplied",
+            "detail":{
+                "failureUrl": "No Cognitio ID Supplied"
+            }
     })
    }
 })
