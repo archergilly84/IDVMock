@@ -125,6 +125,7 @@ const matched = async () => {
     return matchedUserArray;
 }
 
+
 app.get("/esa", async (req, res) => {
     let sso = req.headers.csrf;
     if(sso !== undefined){
@@ -139,8 +140,11 @@ app.get("/esa", async (req, res) => {
         }
         res.status(200).send(response);
     } else {
-        res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
-        res.redirect("https://idvmock.herokuapp.com/auth");
+        //res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
+        res.status(200).send({"Set-Cookie" : "authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly",
+        "redirect" : "https://idvmock.herokuapp.com/auth"
+        });
+        //res.redirect("https://idvmock.herokuapp.com/auth");
     }   
 });
 
@@ -158,13 +162,17 @@ app.get("/pip", async (req, res) => {
         }
         res.status(200).send(response);
     } else {
-        res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
-        res.redirect("https://idvmock.herokuapp.com/auth");
+        //res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
+        res.status(200).send({"Set-Cookie" : "authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly",
+        "redirect" : "https://idvmock.herokuapp.com/auth"
+        });
+        //res.redirect("https://idvmock.herokuapp.com/auth");
     }   
 });
 
 app.get("/auth", (req, res) => {
-    res.redirect("https://idvmock.herokuapp.com/login?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-PIP-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252F%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
+    res.status(200).send({"redirect" : "https://idvmock.herokuapp.com/login?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-PIP-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252F%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid"})
+    //res.redirect("https://idvmock.herokuapp.com/login?realm=%2FCitizens%2FTIDV&authIndexType=service&authIndexValue=TIDV&goto=https%3A%2F%2Fidvmock.herokuapp.com%2Fsso%3Fresponse_type%3Dcode%26client_id%3DCxP-PIP-TIDV%26state%3DN7jkkSZGjYgiiIbbBUvHr97%26response_mode%3Dquery%26redirect_uri%3Dhttps%253A%252F%252Fidvmock.herokuapp.com%252F%26nonce%3DQYd65VfiBfG6h0Ugqhd1wUFK%26scope%3Dopenid%2520guid");
 });
 
 app.get("/login", (req, res) => {
@@ -265,7 +273,7 @@ app.post("/amtree", async (req, res) => {
                         "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
                     }
 
-                    inputValue = inputValue.split('-').join("");
+                    inputValue = inputValue.split('-').join(""); 
                     await insertMatchingData("dob", inputValue);
 
                     matchedUsers = await matched();
@@ -481,7 +489,8 @@ app.post("/sso", (req, res) => {
             }
         })
     }
-    res.redirect("https://idvmock.herokuapp.com/esa");
+    res.status(200).send({"redirect": "https://idvmock.herokuapp.com/esa"})
+    //res.redirect("https://idvmock.herokuapp.com/esa");
 })
 
 app.post("/cognitio", (req, res) => {
