@@ -190,8 +190,8 @@ app.get("/login", (req, res) => {
 
 app.post("/amtree", async (req, res) => {
 
-    let prompt = req.body.callbacks[0].output[0].value;
-    let inputValue = req.body.callbacks[0].input[0].value;
+    let prompt;
+    let inputValue;
     let matchedSize;
     let matchedUsers;
     let challengeQuestion;
@@ -219,6 +219,9 @@ app.post("/amtree", async (req, res) => {
     if(Object.keys(req.body).length === 0){
         res.status(200).send(response);
     } else {
+
+        prompt = req.body.callbacks[0].output[0].value;
+        inputValue = req.body.callbacks[0].input[0].value;
 
         try{
             let obj = JSON.parse(prompt);
