@@ -127,9 +127,9 @@ const matched = async () => {
 
 
 app.get("/esa", async (req, res) => {
-    setTimeout(()=> {
-        console.log("Sleeping...");
-    },2000)
+
+    await new Promise(r => setTimeout(r, 5000));
+    
     let sso = req.headers.csrf;
     if(sso !== undefined){
         let matchedUsers = await matched();
