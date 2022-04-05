@@ -72,6 +72,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function insertMatchingData(column, data){
+     console.log(`Adding ${data} to ${column} within Matching table`);
     if(column === 'verifycount') {
         data = await setVerifyCount(data);
     }
@@ -79,6 +80,7 @@ async function selectAllFromMatchingQuery(){
     .then( 
      resolve => {
          result = resolve.rows
+         console.log(`returned from the database is ${result[0]}`);
          return result[0];
      })
      .catch(err => console.error(err));
