@@ -76,7 +76,7 @@ async function selectAllFromMatchingQuery(){
     if(column === 'verifycount') {
         data = await setVerifyCount(data);
     }
-    return await pool.query(`UPDATE matching SET ${column} = ${data} WHERE id = 1;`)
+    return await pool.query(`UPDATE matching SET ${column} = '${data}' WHERE id = 1;`)
     .then( 
      resolve => {
          result = resolve.rows
