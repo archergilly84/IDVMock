@@ -13,7 +13,7 @@ const pool = new Pool(
 
 const app = express();
 let users = {};
-let data = {};
+let data = [];
 
 //Required to listen to specific port for Heroku
 let port = process.env.PORT;
@@ -36,16 +36,18 @@ async function selectAllFromUsersQuery(){
     return await pool.query(`SELECT * FROM Users;`)
     .then( 
      resolve => {
-         result = resolve.rows
+         result = resolve.rows;
          
          if(result.length === 1){
              users[result[0].id] = result[0];
+             data.push(users);
          } else {
              for(let i = 0; i < result.length; i++){
                  users[result[i].id] = result[i];
+                 data.push(users);
              }
          }
-         return users;
+         return data; 
      })
      .catch(err => console.error(err));
  }
