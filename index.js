@@ -226,13 +226,9 @@ app.post("/amtree", async (req, res) => {
         prompt = req.body.callbacks[0].output[0].value;
         inputValue = req.body.callbacks[0].input[0].value;
 
-        try{
+        if(prompt.substring(0,1) === "{"){
             let obj = JSON.parse(prompt);
-            if(obj.hasOwnProperty('fieldId')){
-                prompt = obj.fieldId;
-            }
-        } catch(err){
-            console.error(`value is not an Object`);
+            prompt = obj.fieldId;
         }
 
         if(challenges.includes(prompt)){
