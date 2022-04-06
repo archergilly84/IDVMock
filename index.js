@@ -12,8 +12,6 @@ const pool = new Pool(
 )
 
 const app = express();
-let users = {};
-let data = [];
 
 //Required to listen to specific port for Heroku
 let port = process.env.PORT;
@@ -27,24 +25,23 @@ app.use(express.json());
 
 const challenges = ["Enter CLI telephone number", "Date of Birth", "phone number", "postcode", "nino",
 "cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name",
-"pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_account", "pip_sort_code","pip_components"];
+"pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_components"];
 const cis_challenges = ["cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name"];
 const pip_challenges = ["pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_account", "pip_sort_code","pip_components"];
 
 
 async function selectAllFromUsersQuery(){
+    let data = [];
     return await pool.query(`SELECT * FROM Users;`)
     .then( 
      resolve => {
          result = resolve.rows;
-         
+
          if(result.length === 1){
-             users[result[0].id] = result[0];
-             data.push(users);
+             data.push(result[0]);
          } else {
              for(let i = 0; i < result.length; i++){
-                 users[result[i].id] = result[i];
-                 data.push(users);
+                 data.push(result[i]);
              }
          }
          return data; 
@@ -64,7 +61,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function getNINO(guid){
-    return await pool.query(`SELECT nino FROM Guid WHERE guid = '${guid}';`)
+    return await pool.query(`SELECT nino FROM guid WHERE guid = '${guid}';`)
     .then( 
      resolve => {
          result = resolve.rows    
@@ -74,18 +71,11 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function insertMatchingData(column, data){
-     console.log(`Adding ${data} to ${column} within Matching table`);
+    console.log(`Adding ${data} to ${column} within Matching table`);
     if(column === 'verifycount') {
         data = await setVerifyCount(data);
     }
     return await pool.query(`UPDATE matching SET ${column} = '${data}' WHERE id = 1;`)
-    .then( 
-     resolve => {
-         result = resolve.rows
-         console.log(`returned from the database is ${result[0]}`);
-         return result[0];
-     })
-     .catch(err => console.error(err));
  }
 
  async function setVerifyCount(data) {
@@ -126,6 +116,7 @@ const matched = async () => {
             }
         }
     }
+    console.log(`MatchedUsers : ${JSON.stringify(matchedUserArray)}`);
     return matchedUserArray;
 }
 
@@ -226,7 +217,13 @@ app.post("/amtree", async (req, res) => {
     } else {
 
         prompt = req.body.callbacks[0].output[0].value;
-        inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+        //console.log(` Input value is : ${req.body.callbacks[0].input[0].value}`);
+        if(req.body.callbacks[0].input[0].value !== ""){
+            inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+        } else {
+            inputValue = req.body.callbacks[0].input[0].value;
+        }
+        
 
         if(prompt.substring(0,1) === "{"){
             let obj = JSON.parse(prompt);
@@ -234,7 +231,7 @@ app.post("/amtree", async (req, res) => {
         }
 
         if(challenges.includes(prompt)){
-            
+            console.log(`Challenge Selected is: ${prompt}`);
             switch(prompt){  
 
                 case "Enter CLI telephone number":
@@ -289,7 +286,7 @@ app.post("/amtree", async (req, res) => {
 
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
-                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
+                        outcome.verifiedValue = matchedUsers[0][challengeQuestion];
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attemptCount = "";
@@ -333,7 +330,7 @@ app.post("/amtree", async (req, res) => {
 
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
-                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
+                        outcome.verifiedValue = matchedUsers[0][challengeQuestion];
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attemptCount = "";
@@ -383,7 +380,7 @@ app.post("/amtree", async (req, res) => {
 
                     if(matchedSize === 1){
                         outcome.fieldId = challengeQuestion;
-                        outcome.verifiedValue = matchedUsers[0].challengeQuestion;
+                        outcome.verifiedValue = matchedUsers[0][challengeQuestion];
                         outcome.inputMode = "";
                         outcome.failureReason = "";
                         outcome.attemptCount = "";
@@ -424,7 +421,7 @@ app.post("/amtree", async (req, res) => {
                     matchedUsers = await matched();
 
                     outcome.fieldId = pipQuestion;
-                    outcome.verifiedValue = matchedUsers[0].pipQuestion;
+                    outcome.verifiedValue = matchedUsers[0][pipQuestion];
                     outcome.inputMode = "";
                     outcome.failureReason = "";
                     outcome.attemptCount = "";
@@ -465,6 +462,7 @@ app.post("/amtree", async (req, res) => {
 
                     matchedUsers = await matched();
                     verifiedCount = await getVerifyCount();
+                    console.log(`Verified count is: ${verifiedCount}`);
                     
                     if(verifiedCount >= 1){
                         response = {
@@ -499,7 +497,7 @@ app.post("/sso", (req, res) => {
             }
         })
     }
-    res.status(200).send({"redirect": "https://idvmock.herokuapp.com/esa"})
+    res.status(200).send({"redirect": "https://idvmock.herokuapp.com/esa"});
     //res.redirect("https://idvmock.herokuapp.com/esa");
 })
 
@@ -514,9 +512,7 @@ app.get("/guid/:guid", async (req, res) => {
    if(congnitioId !== undefined){
     let guid = req.params.guid;
     let nino = await getNINO(guid);
-    res.status(200).send({
-        "nino" : nino
-    })
+    res.status(200).send(nino);
    } else {
     res.status(500).send(
         {
