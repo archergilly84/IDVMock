@@ -225,9 +225,8 @@ app.post("/amtree", async (req, res) => {
         }
         
 
-        if(prompt.substring(0,1) === "{"){
-            let obj = JSON.parse(prompt);
-            prompt = obj.fieldId;
+        if(prompt.hasOwnProperty(fieldId)){
+            prompt = prompt.fieldId;
         }
 
         if(challenges.includes(prompt)){
