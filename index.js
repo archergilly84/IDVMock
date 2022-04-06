@@ -421,7 +421,9 @@ app.post("/amtree", async (req, res) => {
                     matchedUsers = await matched();
 
                     outcome.fieldId = pipQuestion;
+                    console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
                     outcome.verifiedValue = matchedUsers[0][pipQuestion];
+                    console.log(`pip Verified question is: ${outcome.verifiedValue}`);
                     outcome.inputMode = "";
                     outcome.failureReason = "";
                     outcome.attemptCount = "";
