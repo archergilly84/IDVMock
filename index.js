@@ -410,6 +410,7 @@ app.post("/amtree", async (req, res) => {
                 case "cis_partners_dob":
                 case "cis_childs_name":
 
+                    console.log(`Request for CIS Based Challenge is: ${JSON.stringify(req)}`);
                     if(req.body.callbacks[0].output[0].value.outcome){
                        await insertMatchingData('verifycount', 1);
                     }
@@ -457,7 +458,9 @@ app.post("/amtree", async (req, res) => {
                 case "pip_sort_code":
                 case "pip_component":
 
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
+                    console.log(`Request for PIP Based Challenge is: ${JSON.stringify(req)}`);
+
+                    if(req.body.callbacks[0].output[0].value.outcome){
                         await insertMatchingData("verifycount", 1);
                     }
 
