@@ -216,6 +216,7 @@ app.post("/amtree", async (req, res) => {
         res.status(200).send(response);
     } else {
 
+
         prompt = req.body.callbacks[0].output[0].value;
         //console.log(` Input value is : ${req.body.callbacks[0].input[0].value}`);
         if(req.body.callbacks[0].input[0].value !== ""){
@@ -225,10 +226,10 @@ app.post("/amtree", async (req, res) => {
         }
         
 
-        if(inputValue.hasOwnProperty("fieldId")){
-            prompt = inputValue.fieldId;
+        if(prompt.hasOwnProperty("fieldId")){
+            prompt = prompt.fieldId;
         }
-
+        console.log(`Challenge question is ${prompt}`);
         if(challenges.includes(prompt)){
             console.log(`Challenge Selected is: ${prompt}`);
             switch(prompt){  
