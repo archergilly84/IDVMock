@@ -410,7 +410,7 @@ app.post("/amtree", async (req, res) => {
                 case "cis_partners_dob":
                 case "cis_childs_name":
 
-                    if(JSON.parse(req.body.callbacks[0].output[0].value).outcome){
+                    if(req.body.callbacks[0].output[0].value.outcome){
                        await insertMatchingData('verifycount', 1);
                     }
                        
