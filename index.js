@@ -229,7 +229,7 @@ app.post("/amtree", async (req, res) => {
         if(prompt.hasOwnProperty("fieldId")){
             prompt = prompt.fieldId;
         }
-        console.log(`Challenge question is ${prompt}`);
+
         if(challenges.includes(prompt)){
             console.log(`Challenge Selected is: ${prompt}`);
             switch(prompt){  
@@ -422,9 +422,9 @@ app.post("/amtree", async (req, res) => {
                     matchedUsers = await matched();
 
                     outcome.fieldId = pipQuestion;
-                    console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
+                    //console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
                     outcome.verifiedValue = matchedUsers[0][pipQuestion];
-                    console.log(`pip Verified question is: ${outcome.verifiedValue}`);
+                    //console.log(`pip Verified question is: ${outcome.verifiedValue}`);
                     outcome.inputMode = "";
                     outcome.failureReason = "";
                     outcome.attemptCount = "";
@@ -467,7 +467,7 @@ app.post("/amtree", async (req, res) => {
 
                     matchedUsers = await matched();
                     verifiedCount = await getVerifyCount();
-                    console.log(`Verified count is: ${verifiedCount}`);
+                    //console.log(`Verified count is: ${verifiedCount}`);
                     
                     if(verifiedCount >= 1){
                         response = {
