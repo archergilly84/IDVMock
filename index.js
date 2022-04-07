@@ -225,8 +225,8 @@ app.post("/amtree", async (req, res) => {
         }
         
 
-        if(prompt.hasOwnProperty("fieldId")){
-            prompt = prompt.fieldId;
+        if(inputValue.hasOwnProperty("fieldId")){
+            prompt = inputValue.fieldId;
         }
 
         if(challenges.includes(prompt)){
