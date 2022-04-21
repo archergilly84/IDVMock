@@ -216,8 +216,9 @@ app.post("/amtree", async (req, res) => {
         res.status(200).send(response);
     } else {
 
-        prompt = req.body.callbacks[0].output[0].value;
         console.log(` Input is : ${JSON.stringify(req.body)}`);
+        prompt = req.body.callbacks[0].output[0].value;
+        
         if(req.body.callbacks[0].input[0].value !== ""){
             //inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
             inputValue = req.body.callbacks[0].input[0].value.outcome;
