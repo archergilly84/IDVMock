@@ -186,8 +186,6 @@ app.get("/login", (req, res) => {
 
 app.post("/amtree", async (req, res) => {
 
-    //REset
-
     let prompt;
     let inputValue;
     let matchedSize;
@@ -218,17 +216,17 @@ app.post("/amtree", async (req, res) => {
         res.status(200).send(response);
     } else {
 
-        console.log(` Input is : ${JSON.stringify(req.body)}`);
+        console.log(`Input is : ${JSON.stringify(req.body)}`);
         prompt = req.body.callbacks[0].output[0].value;
         
-        if(req.body.callbacks[0].input[0].value !== ""){
-            if(req.body.callbacks[0].input[0].value.outcome === undefined){
-                inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+        if(req.body.callbacks[0].output[0].value !== ""){
+            if(req.body.callbacks[0].output[0].value.outcome === undefined){
+                inputValue = JSON.parse(req.body.callbacks[0].output[0].value).outcome;
             } else {
-                inputValue = req.body.callbacks[0].input[0].value.outcome;
+                inputValue = req.body.callbacks[0].output[0].value.outcome;
             }            
         } else {
-            inputValue = req.body.callbacks[0].input[0].value;
+            inputValue = req.body.callbacks[0].output[0].value;
         }
         
 
