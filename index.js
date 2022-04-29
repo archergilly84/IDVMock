@@ -218,18 +218,15 @@ app.post("/amtree", async (req, res) => {
 
         console.log(`Input is : ${JSON.stringify(req.body)}`);
         prompt = req.body.callbacks[0].output[0].value;
-        
-        if(req.body.callbacks[0].output[0].value !== ""){
-            if(req.body.callbacks[0].output[0].value.outcome === undefined){
-                inputValue = JSON.parse(req.body.callbacks[0].output[0].value).outcome;
-            } else {
-                inputValue = req.body.callbacks[0].output[0].value.outcome;
-            }            
+        if(prompt.substring(0,1) === "{"){
+            prompt = JSON.parse(prompt);
+            if(prompt.hasOwnProperty("outcome")){
+                inputValue = prompt.outcome;
+            } 
         } else {
-            inputValue = req.body.callbacks[0].output[0].value;
+            inputValue = prompt; 
         }
         
-
         if(prompt.hasOwnProperty("fieldId")){
             prompt = prompt.fieldId;
         }
