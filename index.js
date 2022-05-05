@@ -228,7 +228,7 @@ app.post("/amtree", async (req, res) => {
         } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
             inputValue = req.body.callbacks[0].input[0].value.outcome;
         } else {
-            inputValue = "";
+            inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
         }
         
         if(prompt.hasOwnProperty("fieldId")){
