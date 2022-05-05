@@ -220,7 +220,7 @@ app.post("/amtree", async (req, res) => {
         console.log(`Input is : ${JSON.stringify(req.body)}`);
         prompt = req.body.callbacks[0].output[0].value;
         
-        if (prompt.substring(0,1) === "{"){
+        if (prompt.substring(0,1) === "{" && typeof prompt === 'string'){
             prompt = JSON.parse(prompt);
             if(prompt.hasOwnProperty("outcome")){
                 inputValue = prompt.outcome;
