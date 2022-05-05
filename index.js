@@ -1,3 +1,4 @@
+const e = require("express");
 const express = require("express");
 const { Pool } = require("pg");
 
@@ -224,9 +225,10 @@ app.post("/amtree", async (req, res) => {
             if(prompt.hasOwnProperty("outcome")){
                 inputValue = prompt.outcome;
             } 
+        } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
+            inputValue = req.body.callbacks[0].input[0].value.outcome;
         } else {
-            console.log(typeof req.body.callbacks[0].input[0].value);
-            inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome; 
+            inputValue = "";
         }
         
         if(prompt.hasOwnProperty("fieldId")){
