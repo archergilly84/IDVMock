@@ -233,20 +233,24 @@ app.post("/amtree", async (req, res) => {
 
         if(Object.keys(req.body).length === 0){
             res.status(200).send(response);
-        } else {
+        } else { 
+            try{
 
-            console.log(`Input is : ${JSON.stringify(req.body)}`);
-            prompt = req.body.callbacks[0].output[0].value;
-            
-            if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
-                prompt = JSON.parse(prompt);
-                if(prompt.hasOwnProperty("outcome")){
-                    inputValue = prompt.outcome;
-                } 
-            } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
-                inputValue = req.body.callbacks[0].input[0].value.outcome;
-            } else {
-                inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+                console.log(`Input is : ${JSON.stringify(req.body)}`);
+                prompt = req.body.callbacks[0].output[0].value;
+                
+                if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
+                    prompt = JSON.parse(prompt);
+                    if(prompt.hasOwnProperty("outcome")){
+                        inputValue = prompt.outcome;
+                    } 
+                } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
+                    inputValue = req.body.callbacks[0].input[0].value.outcome;
+                } else {
+                    inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+                }
+            } catch (error){
+                console.log(`JSON parse has errored due to ${error.message}`);
             }
             
             if(prompt.hasOwnProperty("fieldId")){
