@@ -234,302 +234,302 @@ app.post("/amtree", async (req, res) => {
         if(Object.keys(req.body).length === 0){ //{tokenId: "122123"}
             res.status(200).send(response);
         } else { 
-            try{
-
-                if(req.body.hasOwnProperty("tokenId")){
-                    response = {
-                        "code": 401,
-                        "reason": "Unauthorized",
-                        "message": "User not verified",
-                        "detail":{
-                            "failureUrl": "User has not verified"
-                        }
+            if(req.body.hasOwnProperty("tokenId")){
+                response = {
+                    "code": 401,
+                    "reason": "Unauthorized",
+                    "message": "User not verified",
+                    "detail":{
+                        "failureUrl": "User has not verified"
                     }
                 }
-
-                console.log(`Input is : ${JSON.stringify(req.body)}`); 
-                prompt = req.body.callbacks[0].output[0].value;
-                
-                if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
-                    prompt = JSON.parse(prompt);
-                    if(prompt.hasOwnProperty("outcome")){
-                        inputValue = prompt.outcome;
-                    } 
-                } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
-                    inputValue = req.body.callbacks[0].input[0].value.outcome;
-                } else {
-                    inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
-                }
-            } catch (error){
-                console.log(`JSON parse has errored due to ${error.message}`);
-            }
+            } else {
             
-            if(prompt.hasOwnProperty("fieldId")){
-                prompt = prompt.fieldId;
-            }
-
-            if(challenges.includes(prompt)){
-                console.log(`Challenge Selected is: ${prompt}`);
-                switch(prompt){  
-
-                    case "Enter CLI telephone number":
+                try{
+                    console.log(`Input is : ${JSON.stringify(req.body)}`); 
+                    prompt = req.body.callbacks[0].output[0].value;
                     
-                        await insertMatchingData("cli", inputValue);
-
-                        response = {
-                            "callbacks": [{
-                                "output": [{
-                                    "name": "prompt",
-                                    "value": "Date of Birth"
-                                }],
-                                "input": [{
-                                    "name": "IDToken1",
-                                    "value": ""
-                                }],
-                                "type": "NameCallback"
-                            }],
-                            "authId":
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiI4b3RiYjYzZzhhMjdjNW8zYWpyMGhrZWJtbyIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.3Nep_KEA4sTolvRg2VIU7J9g6whlQYiR8zq2CjtoX1I"
-                        }
-                        break;
-
-                    case "Date of Birth":
-                    
-                        //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                        challengeQuestion = 'cis_home_phone'
-                        
-                        response = {
-                            "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
-                            "callbacks": [{
-                                "output": [{
-                                    "name": "prompt",
-                                    "value": ""
-                                }],
-                                "input": [{
-                                    "name": "IDToken1",
-                                    "value": ""
-                                }],
-                                "type": "NameCallback"
-                            }],
-                            "authId":
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
-                        }
-
-                        inputValue = inputValue.split('-').join(""); 
-                        await insertMatchingData("dob", inputValue);
-
-                        matchedUsers = await matched();
-                        matchedSize = matchedUsers.length;
-
-
-                        if(matchedSize === 1){
-                            outcome.fieldId = challengeQuestion;
-                            outcome.verifiedValue = matchedUsers[0][challengeQuestion];
-                            outcome.inputMode = "";
-                            outcome.failureReason = "";
-                            outcome.attemptCount = "";
-                            outcome.confirmed = "";
-                            outcome.outcome = "";
-                            outcome.secondsource = "";
-                            response.callbacks[0].output[0].value = JSON.stringify(outcome);
-                        } else if(matchedSize > 1) {
-                            response.callbacks[0].output[0].value = "postcode";
-                        } else {
-                            response.callbacks[0].output[0].value = "phone number";
-                        }
-                        break;
-
-                    case "postcode":
-
-                        await insertMatchingData("postcode", inputValue);
-
-                        matchedUsers = await matched();
-                        matchedSize = matchedUsers.length;
-                        //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                        challengeQuestion = 'cis_home_phone';
-                    
-                        response = {
-                            "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
-                            "callbacks": [{
-                                "output": [{
-                                    "name": "prompt",
-                                    "value": ""
-                                }],
-                                "input": [{
-                                    "name": "IDToken1",
-                                    "value": ""
-                                }],
-                                "type": "NameCallback"
-                            }],
-                            "authId":
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
-                        }
-                        
-
-                        if(matchedSize === 1){
-                            outcome.fieldId = challengeQuestion;
-                            outcome.verifiedValue = matchedUsers[0][challengeQuestion];
-                            outcome.inputMode = "";
-                            outcome.failureReason = "";
-                            outcome.attemptCount = "";
-                            outcome.confirmed = "";
-                            outcome.outcome = "";
-                            outcome.secondsource = "";
-                            response.callbacks[0].output[0].value = JSON.stringify(outcome);
-                        } else {
-                            console.error(new Error('No Users returned using postcode disambiguator'));
-                            response = {
-                                "code":401,
-                                "reason":"Unauthorized",
-                                "message":"Login failure",
-                                "detail":{
-                                    "failureUrl":"No Users returned using postcode disambiguator"
-                                }
-                            }
+                    if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
+                        prompt = JSON.parse(prompt);
+                        if(prompt.hasOwnProperty("outcome")){
+                            inputValue = prompt.outcome;
                         } 
-                        break;
+                    } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
+                        inputValue = req.body.callbacks[0].input[0].value.outcome;
+                    } else {
+                        inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+                    }
+                } catch (error){
+                    console.log(`JSON parse has errored due to ${error.message}`);
+                }
+            
+                if(prompt.hasOwnProperty("fieldId")){
+                    prompt = prompt.fieldId;
+                }
 
-                    case "phone number":
+                if(challenges.includes(prompt)){
+                    console.log(`Challenge Selected is: ${prompt}`);
+                    switch(prompt){  
 
-                        await insertMatchingData("cli", inputValue);
-
-                        matchedUsers = await matched();
-                        matchedSize = matchedUsers.length;
-                        //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                        challengeQuestion = 'cis_home_phone';
+                        case "Enter CLI telephone number":
                         
-                        response = {
-                            "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
-                            "callbacks": [{
-                                "output": [{
-                                    "name": "prompt",
-                                    "value": ""
-                                }],
-                                "input": [{
-                                    "name": "IDToken1",
-                                    "value": ""
-                                }],
-                                "type": "NameCallback"
-                            }],
-                            "authId":
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
-                        }
-                        
+                            await insertMatchingData("cli", inputValue);
 
-                        if(matchedSize === 1){
-                            outcome.fieldId = challengeQuestion;
-                            outcome.verifiedValue = matchedUsers[0][challengeQuestion];
+                            response = {
+                                "callbacks": [{
+                                    "output": [{
+                                        "name": "prompt",
+                                        "value": "Date of Birth"
+                                    }],
+                                    "input": [{
+                                        "name": "IDToken1",
+                                        "value": ""
+                                    }],
+                                    "type": "NameCallback"
+                                }],
+                                "authId":
+                                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiI4b3RiYjYzZzhhMjdjNW8zYWpyMGhrZWJtbyIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.3Nep_KEA4sTolvRg2VIU7J9g6whlQYiR8zq2CjtoX1I"
+                            }
+                            break;
+
+                        case "Date of Birth":
+                        
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone'
+                            
+                            response = {
+                                "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
+                                "callbacks": [{
+                                    "output": [{
+                                        "name": "prompt",
+                                        "value": ""
+                                    }],
+                                    "input": [{
+                                        "name": "IDToken1",
+                                        "value": ""
+                                    }],
+                                    "type": "NameCallback"
+                                }],
+                                "authId":
+                                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
+                            }
+
+                            inputValue = inputValue.split('-').join(""); 
+                            await insertMatchingData("dob", inputValue);
+
+                            matchedUsers = await matched();
+                            matchedSize = matchedUsers.length;
+
+
+                            if(matchedSize === 1){
+                                outcome.fieldId = challengeQuestion;
+                                outcome.verifiedValue = matchedUsers[0][challengeQuestion];
+                                outcome.inputMode = "";
+                                outcome.failureReason = "";
+                                outcome.attemptCount = "";
+                                outcome.confirmed = "";
+                                outcome.outcome = "";
+                                outcome.secondsource = "";
+                                response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                            } else if(matchedSize > 1) {
+                                response.callbacks[0].output[0].value = "postcode";
+                            } else {
+                                response.callbacks[0].output[0].value = "phone number";
+                            }
+                            break;
+
+                        case "postcode":
+
+                            await insertMatchingData("postcode", inputValue);
+
+                            matchedUsers = await matched();
+                            matchedSize = matchedUsers.length;
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone';
+                        
+                            response = {
+                                "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
+                                "callbacks": [{
+                                    "output": [{
+                                        "name": "prompt",
+                                        "value": ""
+                                    }],
+                                    "input": [{
+                                        "name": "IDToken1",
+                                        "value": ""
+                                    }],
+                                    "type": "NameCallback"
+                                }],
+                                "authId":
+                                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
+                            }
+                            
+
+                            if(matchedSize === 1){
+                                outcome.fieldId = challengeQuestion;
+                                outcome.verifiedValue = matchedUsers[0][challengeQuestion];
+                                outcome.inputMode = "";
+                                outcome.failureReason = "";
+                                outcome.attemptCount = "";
+                                outcome.confirmed = "";
+                                outcome.outcome = "";
+                                outcome.secondsource = "";
+                                response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                            } else {
+                                console.error(new Error('No Users returned using postcode disambiguator'));
+                                response = {
+                                    "code":401,
+                                    "reason":"Unauthorized",
+                                    "message":"Login failure",
+                                    "detail":{
+                                        "failureUrl":"No Users returned using postcode disambiguator"
+                                    }
+                                }
+                            } 
+                            break;
+
+                        case "phone number":
+
+                            await insertMatchingData("cli", inputValue);
+
+                            matchedUsers = await matched();
+                            matchedSize = matchedUsers.length;
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone';
+                            
+                            response = {
+                                "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
+                                "callbacks": [{
+                                    "output": [{
+                                        "name": "prompt",
+                                        "value": ""
+                                    }],
+                                    "input": [{
+                                        "name": "IDToken1",
+                                        "value": ""
+                                    }],
+                                    "type": "NameCallback"
+                                }],
+                                "authId":
+                                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
+                            }
+                            
+
+                            if(matchedSize === 1){
+                                outcome.fieldId = challengeQuestion;
+                                outcome.verifiedValue = matchedUsers[0][challengeQuestion];
+                                outcome.inputMode = "";
+                                outcome.failureReason = "";
+                                outcome.attemptCount = "";
+                                outcome.confirmed = "";
+                                outcome.outcome = "";
+                                outcome.secondsource = "";
+                                response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                            } else if(matchedSize > 1) {
+                                response.callbacks[0].output[0].value = "postcode";
+                            } else {
+                                console.error(new Error('No Users returned using User Entered Phone Number'));
+                                response = {
+                                    "code":401,
+                                    "reason":"Unauthorized",
+                                    "message":"Login failure",
+                                    "detail":{
+                                        "failureUrl":"No Users returned using User Entered Phone Number"
+                                    }
+                                }
+                            }     
+                            break;
+
+                        case "cis_benefit":
+                        case "cis_home_phone":
+                        case "cis_mobile_phone":
+                        case "cis_childs_dob":
+                        case "cis_partners_nino":
+                        case "cis_partners_dob":
+                        case "cis_childs_name":
+
+                            console.log(`Request for CIS Based Challenge is: ${JSON.stringify(req.body)}`);
+                            if(req.body.callbacks[0].output[0].value.outcome){
+                                await insertMatchingData('verifycount', 1);
+                            }
+                            
+                            //pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
+                            pipQuestion = 'pip_bank_details';
+
+                            matchedUsers = await matched();
+
+                            outcome.fieldId = pipQuestion;
+                            //console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
+                            outcome.verifiedValue = matchedUsers[0][pipQuestion];
+                            //console.log(`pip Verified question is: ${outcome.verifiedValue}`);
                             outcome.inputMode = "";
                             outcome.failureReason = "";
                             outcome.attemptCount = "";
                             outcome.confirmed = "";
                             outcome.outcome = "";
-                            outcome.secondsource = "";
-                            response.callbacks[0].output[0].value = JSON.stringify(outcome);
-                        } else if(matchedSize > 1) {
-                            response.callbacks[0].output[0].value = "postcode";
-                        } else {
-                            console.error(new Error('No Users returned using User Entered Phone Number'));
+                            outcome.secondsource = "PIP";
+
                             response = {
-                                "code":401,
-                                "reason":"Unauthorized",
-                                "message":"Login failure",
-                                "detail":{
-                                    "failureUrl":"No Users returned using User Entered Phone Number"
+                                "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
+                                "callbacks": [{
+                                    "output": [{
+                                        "name": "prompt",
+                                        "value": ""
+                                    }],
+                                    "input": [{
+                                        "name": "IDToken1",
+                                        "value": ""
+                                    }],
+                                    "type": "NameCallback"
+                                }],
+                                "authId":
+                                "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
+                            }
+
+                            response.callbacks[0].output[0].value = JSON.stringify(outcome);
+                            break;
+
+                        case "pip_pay_day":
+                        case "pip_lastpayment_date":
+                        case "pip_lastpayment_amount":
+                        case "pip_bank_details":
+                        case "pip_sort_code":
+                        case "pip_component":
+
+                            console.log(`Request for PIP Based Challenge is: ${JSON.stringify(req.body)}`);
+
+                            if(req.body.callbacks[0].output[0].value.outcome){
+                                await insertMatchingData("verifycount", 1);
+                            }
+
+                            matchedUsers = await matched();
+                            verifiedCount = await getVerifyCount();
+                            //console.log(`Verified count is: ${verifiedCount}`);
+                            
+                            if(verifiedCount >= 1){
+                                response = {
+                                    "tokenId" : matchedUsers[0].sso,
+                                }
+                            } else {
+                                response = {
+                                        "code": 401,
+                                        "reason": "Unauthorized",
+                                        "message": "User not verified",
+                                        "detail":{
+                                            "failureUrl": "User has not verified"
+                                        }
                                 }
                             }
-                        }     
-                        break;
-
-                    case "cis_benefit":
-                    case "cis_home_phone":
-                    case "cis_mobile_phone":
-                    case "cis_childs_dob":
-                    case "cis_partners_nino":
-                    case "cis_partners_dob":
-                    case "cis_childs_name":
-
-                        console.log(`Request for CIS Based Challenge is: ${JSON.stringify(req.body)}`);
-                        if(req.body.callbacks[0].output[0].value.outcome){
-                            await insertMatchingData('verifycount', 1);
-                        }
-                        
-                        //pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
-                        pipQuestion = 'pip_bank_details';
-
-                        matchedUsers = await matched();
-
-                        outcome.fieldId = pipQuestion;
-                        //console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
-                        outcome.verifiedValue = matchedUsers[0][pipQuestion];
-                        //console.log(`pip Verified question is: ${outcome.verifiedValue}`);
-                        outcome.inputMode = "";
-                        outcome.failureReason = "";
-                        outcome.attemptCount = "";
-                        outcome.confirmed = "";
-                        outcome.outcome = "";
-                        outcome.secondsource = "PIP";
-
-                        response = {
-                            "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
-                            "callbacks": [{
-                                "output": [{
-                                    "name": "prompt",
-                                    "value": ""
-                                }],
-                                "input": [{
-                                    "name": "IDToken1",
-                                    "value": ""
-                                }],
-                                "type": "NameCallback"
-                            }],
-                            "authId":
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
-                        }
-
-                        response.callbacks[0].output[0].value = JSON.stringify(outcome);
-                        break;
-
-                    case "pip_pay_day":
-                    case "pip_lastpayment_date":
-                    case "pip_lastpayment_amount":
-                    case "pip_bank_details":
-                    case "pip_sort_code":
-                    case "pip_component":
-
-                        console.log(`Request for PIP Based Challenge is: ${JSON.stringify(req.body)}`);
-
-                        if(req.body.callbacks[0].output[0].value.outcome){
-                            await insertMatchingData("verifycount", 1);
-                        }
-
-                        matchedUsers = await matched();
-                        verifiedCount = await getVerifyCount();
-                        //console.log(`Verified count is: ${verifiedCount}`);
-                        
-                        if(verifiedCount >= 1){
-                            response = {
-                                "tokenId" : matchedUsers[0].sso,
-                            }
-                        } else {
-                            response = {
-                                    "code": 401,
-                                    "reason": "Unauthorized",
-                                    "message": "User not verified",
-                                    "detail":{
-                                        "failureUrl": "User has not verified"
-                                    }
-                            }
-                        }
-                        break;
-                }    
+                            break;
+                    }    
+                }
+                console.log(`The Response being returned is: ${JSON.stringify(response)}`);
+                res.status(200).send(response);
             }
-            console.log(`The Response being returned is: ${JSON.stringify(response)}`);
-            res.status(200).send(response);
         }
-    } catch (error){
-        console.log(`AMTREE endpoint has errored due to ${error.message} on challenge question ${prompt}`);
-    }
+        } catch (error){
+            console.log(`AMTREE endpoint has errored due to ${error.message} on challenge question ${prompt}`);
+        }
 })
 
 app.post("/sso", (req, res) => {
