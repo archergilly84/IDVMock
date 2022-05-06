@@ -513,7 +513,7 @@ app.post("/amtree", async (req, res) => {
                         break;
                 }    
             }
-            console.log(`The Response being returned is: ${JSON.stringify(response)`);
+            console.log(`The Response being returned is: ${JSON.stringify(response)}`);
             res.status(200).send(response);
         }
     } catch (error){
