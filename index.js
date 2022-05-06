@@ -231,12 +231,23 @@ app.post("/amtree", async (req, res) => {
             "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdXRoSW5kZXhWYWx1ZSI6IlRJRFYiLCJvdGsiOiJwbmpnYjlxaXM4bG44aWFiYm02ZjdnMHEwYSIsImF1dGhJbmRleFR5cGUiOiJzZXJ2aWNlIiwicmVhbG0iOiIvQ2l0aXplbnMvVElEViIsInNlc3Npb25JZCI6InVzZGh0WG5wc1A5bWh6dWVYcnFwS2VHdUE3QS4qQUFKVFNRQUNNRElBQWxOTEFCeFlhRXhpVW1sR2VVVjViamhMY25WRFltUjJRakJGWlcwcmNrazlBQVIwZVhCbEFBaERWRk5mUVZWVVNBQUNVekVBQWpBeCoiLCJleHAiOjE2MzcwODMwMTgsImlhdCI6MTYzNzA4MjExOH0.1soDjOUXL2H-dUTxw59kpUSDTfoJJtIIgfjt_R9BaRE"
         }
 
-        if(Object.keys(req.body).length === 0){
+        if(Object.keys(req.body).length === 0){ //{tokenId: "122123"}
             res.status(200).send(response);
         } else { 
             try{
 
-                console.log(`Input is : ${JSON.stringify(req.body)}`);
+                if(req.body.hasOwnProperty("tokenId")){
+                    response = {
+                        "code": 401,
+                        "reason": "Unauthorized",
+                        "message": "User not verified",
+                        "detail":{
+                            "failureUrl": "User has not verified"
+                        }
+                    }
+                }
+
+                console.log(`Input is : ${JSON.stringify(req.body)}`); 
                 prompt = req.body.callbacks[0].output[0].value;
                 
                 if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
