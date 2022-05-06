@@ -440,7 +440,7 @@ app.post("/amtree", async (req, res) => {
 
                         console.log(`Request for CIS Based Challenge is: ${JSON.stringify(req.body)}`);
                         if(req.body.callbacks[0].output[0].value.outcome){
-                        await insertMatchingData('verifycount', 1);
+                            await insertMatchingData('verifycount', 1);
                         }
                         
                         //pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
@@ -513,6 +513,7 @@ app.post("/amtree", async (req, res) => {
                         break;
                 }    
             }
+            console.log(`The Response being returned is: ${JSON.stringify(response)`);
             res.status(200).send(response);
         }
     } catch (error){
