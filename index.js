@@ -80,12 +80,14 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function setVerifyCount(data) {
+    console.log("Setting verify count...")
     let verifiedCount =  await pool.query(`SELECT verifycount FROM matching`).then(resolve => {result = resolve.rows[0].verifycount; return result});
     verifiedCount += data
     return verifiedCount;
  }
 
  async function getVerifyCount() {
+    console.log("Getting verify count...")
     let verifiedCount =  await pool.query(`SELECT verifycount FROM matching`).then(resolve => {result = resolve.rows[0].verifycount; return result});
     return verifiedCount;
  }
