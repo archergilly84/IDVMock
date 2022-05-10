@@ -90,6 +90,10 @@ async function selectAllFromMatchingQuery(){
     return verifiedCount;
  }
 
+ async function resetVerifyCount() {
+    return await pool.query(`UPDATE matching SET verifycount = '0' WHERE id = 1;`);
+ }
+
 const matched = async () => {
 
     const matchedUserArray = [];
@@ -520,6 +524,40 @@ app.post("/amtree", async (req, res) => {
                                         }
                                 }
                             }
+                            await resetVerifyCount();
+                            break;
+
+                        case "esa_pay_day":
+                        case "esa_lastpayment_date":
+                        case "esa_lastpayment_amount":
+                        case "esa_bank_details":
+                        case "esa_sort_code":
+
+                            //console.log(`Request for ESA Based Challenge is: ${JSON.stringify(req.body)}`);
+
+                            if(req.body.callbacks[0].output[0].value.outcome){
+                                await insertMatchingData("verifycount", 1);
+                            }
+
+                            matchedUsers = await matched();
+                            verifiedCount = await getVerifyCount();
+                            //console.log(`Verified count is: ${verifiedCount}`);
+                            
+                            if(verifiedCount >= 1){
+                                response = {
+                                    "tokenId" : matchedUsers[0].sso,
+                                }
+                            } else {
+                                response = {
+                                        "code": 401,
+                                        "reason": "Unauthorized",
+                                        "message": "User not verified",
+                                        "detail":{
+                                            "failureUrl": "User has not verified"
+                                        }
+                                }
+                            }
+                            await resetVerifyCount();
                             break;
                     }    
                 }
