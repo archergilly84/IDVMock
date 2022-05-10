@@ -259,6 +259,7 @@ app.post("/amtree", async (req, res) => {
                     if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
                         prompt = JSON.parse(prompt);
                         if(prompt.hasOwnProperty("outcome")){
+                            console.log(`Value of outcome is ${prompt.outcome}`)
                             inputValue = prompt.outcome;
                         } 
                     } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
@@ -456,7 +457,7 @@ app.post("/amtree", async (req, res) => {
                         case "cis_childs_name":
 
                             //console.log(`Request for CIS Based Challenge is: ${JSON.stringify(req.body)}`);
-                            if(prompt.outcome){
+                            if(inputValue){
                                 await insertMatchingData('verifycount', 1);
                             }
                             
@@ -505,7 +506,7 @@ app.post("/amtree", async (req, res) => {
 
                             //console.log(`Request for PIP Based Challenge is: ${JSON.stringify(req.body)}`);
 
-                            if(prompt.outcome){
+                            if(inputValue){
                                 await insertMatchingData("verifycount", 1);
                             }
 
@@ -538,7 +539,7 @@ app.post("/amtree", async (req, res) => {
 
                             //console.log(`Request for ESA Based Challenge is: ${JSON.stringify(req.body)}`);
 
-                            if(prompt.outcome){
+                            if(inputValue){
                                 await insertMatchingData("verifycount", 1);
                             }
 
