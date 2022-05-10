@@ -91,6 +91,7 @@ async function selectAllFromMatchingQuery(){
  }
 
  async function resetVerifyCount() {
+     console.log("Resetting verify count...")
     return await pool.query(`UPDATE matching SET verifycount = '0' WHERE id = 1;`);
  }
 
