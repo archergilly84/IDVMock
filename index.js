@@ -597,7 +597,7 @@ app.post("/sso", (req, res) => {
 app.post("/cognitio", (req, res) => {
     try{
         res.status(200).send({
-            "id" : "123456FTG7890"
+            "access_token" : "123456FTG7890"
         })
     } catch (error){
         console.log(`Cognitio endpoint has errored due to ${error.message}`);
