@@ -254,14 +254,14 @@ app.post("/amtree", async (req, res) => {
             
                 try{
                     console.log(`Input is : ${JSON.stringify(req.body)}`); 
-                    prompt = req.body.callbacks[0].output[0].value;
+                    challengeQuestion = req.body.callbacks[0].output[0].value;
                     
-                    if (typeof prompt === 'string' && prompt.substring(0,1) === "{"){
-                        prompt = JSON.parse(prompt);
-                        if(prompt.hasOwnProperty("outcome")){
-                            console.log(`Value of outcome is ${prompt.outcome}`)
-                            inputValue = prompt.outcome;
-                        } 
+                    if (typeof challengeQuestion === 'string' && challengeQuestion.substring(0,1) === "{"){
+                        challengeQuestion = JSON.parse(challengeQuestion);
+                        // if(prompt.hasOwnProperty("outcome")){
+                        //     console.log(`Value of outcome is ${prompt.outcome}`)
+                        //     inputValue = prompt.outcome;
+                        // } 
                     } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
                         inputValue = req.body.callbacks[0].input[0].value.outcome;
                     } else {
@@ -271,13 +271,13 @@ app.post("/amtree", async (req, res) => {
                     console.log(`JSON parse has errored due to ${error.message}`);
                 }
             
-                if(prompt.hasOwnProperty("fieldId")){
-                    prompt = prompt.fieldId;
+                if(challengeQuestion.hasOwnProperty("fieldId")){
+                    challengeQuestion = challengeQuestion.fieldId;
                 }
 
-                if(challenges.includes(prompt)){
-                    console.log(`Challenge Selected is: ${prompt}`);
-                    switch(prompt){  
+                if(challenges.includes(challengeQuestion)){
+                    console.log(`Challenge Selected is: ${challengeQuestion}`);
+                    switch(challengeQuestion){  
 
                         case "Enter CLI telephone number":
                         
@@ -332,11 +332,6 @@ app.post("/amtree", async (req, res) => {
                             if(matchedSize === 1){
                                 outcome.fieldId = challengeQuestion;
                                 outcome.verifiedValue = matchedUsers[0][challengeQuestion];
-                                outcome.inputMode = "";
-                                outcome.failureReason = "";
-                                outcome.attemptCount = "";
-                                outcome.confirmed = "";
-                                outcome.outcome = "";
                                 outcome.secondsource = "";
                                 response.callbacks[0].output[0].value = JSON.stringify(outcome);
                             } else if(matchedSize > 1) {
@@ -376,11 +371,6 @@ app.post("/amtree", async (req, res) => {
                             if(matchedSize === 1){
                                 outcome.fieldId = challengeQuestion;
                                 outcome.verifiedValue = matchedUsers[0][challengeQuestion];
-                                outcome.inputMode = "";
-                                outcome.failureReason = "";
-                                outcome.attemptCount = "";
-                                outcome.confirmed = "";
-                                outcome.outcome = "";
                                 outcome.secondsource = "";
                                 response.callbacks[0].output[0].value = JSON.stringify(outcome);
                             } else {
@@ -426,11 +416,6 @@ app.post("/amtree", async (req, res) => {
                             if(matchedSize === 1){
                                 outcome.fieldId = challengeQuestion;
                                 outcome.verifiedValue = matchedUsers[0][challengeQuestion];
-                                outcome.inputMode = "";
-                                outcome.failureReason = "";
-                                outcome.attemptCount = "";
-                                outcome.confirmed = "";
-                                outcome.outcome = "";
                                 outcome.secondsource = "";
                                 response.callbacks[0].output[0].value = JSON.stringify(outcome);
                             } else if(matchedSize > 1) {
@@ -470,11 +455,6 @@ app.post("/amtree", async (req, res) => {
                             //console.log(`PIP Verified question is returned as: ${matchedUsers[0][pipQuestion]}`);
                             outcome.verifiedValue = matchedUsers[0][pipQuestion];
                             //console.log(`pip Verified question is: ${outcome.verifiedValue}`);
-                            outcome.inputMode = "";
-                            outcome.failureReason = "";
-                            outcome.attemptCount = "";
-                            outcome.confirmed = "";
-                            outcome.outcome = "";
                             outcome.secondsource = "PIP";
 
                             response = {
