@@ -264,8 +264,10 @@ app.post("/amtree", async (req, res) => {
                         // } 
                     } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
                         inputValue = req.body.callbacks[0].input[0].value.outcome;
+                        console.log(`The input value is ${inputValue}, inside object condition if true`)
                     } else {
                         inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+                        console.log(`The input value is ${inputValue}, inside string condition if true`)
                     }
                 } catch (error){
                     console.log(`JSON parse has errored due to ${error.message}`);
