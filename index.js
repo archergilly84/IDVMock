@@ -258,10 +258,12 @@ app.post("/amtree", async (req, res) => {
                     
                     if (typeof challengeQuestion === 'string' && challengeQuestion.substring(0,1) === "{"){
                         challengeQuestion = JSON.parse(challengeQuestion);
-                        // if(prompt.hasOwnProperty("outcome")){
-                        //     console.log(`Value of outcome is ${prompt.outcome}`)
-                        //     inputValue = prompt.outcome;
-                        // } 
+                        if (typeof req.body.callbacks[0].input[0].value === 'string' && req.body.callbacks[0].input[0].value.substring(0,1) === "{"){
+                            console.log(`Value of outcome is ${req.body.callbacks[0].input[0].value.outcome}`)
+                            inputValue = JSON.parse(req.body.callbacks[0].input[0].value).outcome;
+                        } else {
+                            inputValue = req.body.callbacks[0].input[0].value.outcome;
+                        }
                     } else if(typeof req.body.callbacks[0].input[0].value === 'object'){
                         inputValue = req.body.callbacks[0].input[0].value.outcome;
                         console.log(`The input value is ${inputValue}, inside object condition if true`)
