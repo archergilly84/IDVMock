@@ -147,7 +147,7 @@ app.get("/esa", async (req, res) => {
             res.status(200).send(response);
         } else {
             //res.set('Set-Cookie','authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly');
-            res.status(200).send({"Set-Cookie" : "authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly",
+            res.status(400).send({"Set-Cookie" : "authorization=VLBdXT5S60UYq8NklwnikA|1631721393|pzgtRtH0gddOL8CxH2VkEDs8w5d73tugPBb6d0j0tm1FQ3FF6L0CUtYJXCmi17Sm7bXsKnK7k-vh-rK_9r9ktenim8mAVG7ivAkQCAfSnbkKPWnKGNni84FkbbWzIANZQe5XS2uA3_vDYqGYPjMPVoE814KrVPBviZpDHzNIXT0bzeSj7uFpYlrGFi-hTkX_yPIWbUv7kMpapAzYOWohCg|rMtXnUX3F9_15e6auSnNGnE6N-A; Path=/; Secure; HttpOnly",
             "redirect" : "https://idvmock.herokuapp.com/auth"
             });
             //res.redirect("https://idvmock.herokuapp.com/auth");
