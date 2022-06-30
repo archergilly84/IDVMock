@@ -450,8 +450,8 @@ app.post("/amtree", async (req, res) => {
                                 await insertMatchingData('verifycount', 1);
                             }
                             
-                            //pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
-                            pipQuestion = 'pip_bank_details';
+                            pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
+                            //pipQuestion = 'pip_bank_details';
 
                             matchedUsers = await matched();
 
