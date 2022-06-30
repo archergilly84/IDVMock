@@ -307,7 +307,7 @@ app.post("/amtree", async (req, res) => {
                         case "Date of Birth":
                         
                             //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            challengeQuestion = 'cis_home_phone'
+                            challengeQuestion = 'cis_home_phone';
                             
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
