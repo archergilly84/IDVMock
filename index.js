@@ -306,8 +306,8 @@ app.post("/amtree", async (req, res) => {
 
                         case "Date of Birth":
                         
-                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            //challengeQuestion = 'cis_home_phone'
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone'
                             
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -351,8 +351,8 @@ app.post("/amtree", async (req, res) => {
 
                             matchedUsers = await matched();
                             matchedSize = matchedUsers.length;
-                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            //challengeQuestion = 'cis_home_phone';
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone';
                         
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -396,8 +396,8 @@ app.post("/amtree", async (req, res) => {
 
                             matchedUsers = await matched();
                             matchedSize = matchedUsers.length;
-                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            //challengeQuestion = 'cis_home_phone';
+                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            challengeQuestion = 'cis_home_phone';
                             
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -450,8 +450,8 @@ app.post("/amtree", async (req, res) => {
                                 await insertMatchingData('verifycount', 1);
                             }
                             
-                            pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
-                            //pipQuestion = 'pip_bank_details';
+                            //pipQuestion = pip_challenges[Math.floor(Math.random() * pip_challenges.length)];
+                            pipQuestion = 'pip_bank_details';
 
                             matchedUsers = await matched();
 
