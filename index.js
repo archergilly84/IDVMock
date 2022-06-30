@@ -27,7 +27,7 @@ app.use(express.json());
 const challenges = ["Enter CLI telephone number", "Date of Birth", "phone number", "postcode", "nino",
 "cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name",
 "pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_details", "pip_sort_code","pip_components"];
-const cis_challenges = ["cis_home_phone", "cis_mobile_phone", "cis_benefit", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob","cis_childs_name"];
+const cis_challenges = ["cis_home_phone", "cis_mobile_phone", "cis_childs_dob", "cis_partners_nino", "cis_partners_dob"]//,"cis_benefit","cis_childs_name"];
 const pip_challenges = ["pip_last_payment_amount", "pip_last_payment_date","pip_pay_day", "pip_bank_account", "pip_sort_code","pip_components"];
 
 
@@ -306,8 +306,8 @@ app.post("/amtree", async (req, res) => {
 
                         case "Date of Birth":
                         
-                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            challengeQuestion = 'cis_home_phone'
+                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            //challengeQuestion = 'cis_home_phone'
                             
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -351,8 +351,8 @@ app.post("/amtree", async (req, res) => {
 
                             matchedUsers = await matched();
                             matchedSize = matchedUsers.length;
-                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            challengeQuestion = 'cis_home_phone';
+                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            //challengeQuestion = 'cis_home_phone';
                         
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
@@ -396,8 +396,8 @@ app.post("/amtree", async (req, res) => {
 
                             matchedUsers = await matched();
                             matchedSize = matchedUsers.length;
-                            //challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
-                            challengeQuestion = 'cis_home_phone';
+                            challengeQuestion = cis_challenges[Math.floor(Math.random() * cis_challenges.length)];
+                            //challengeQuestion = 'cis_home_phone';
                             
                             response = {
                                 "cookie": "dthamlbcookie=01; Path=/; Secure; HttpOnly; SameSite=none",
